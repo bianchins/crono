@@ -1,3 +1,4 @@
+
 --
 -- Struttura della tabella `tokens`
 --
@@ -10,8 +11,6 @@ CREATE TABLE IF NOT EXISTS `tokens` (
   PRIMARY KEY (`token`,`client_secret_uuid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tokens table (Auth for API)';
 
--- --------------------------------------------------------
-
 --
 -- Struttura della tabella `users`
 --
@@ -22,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(100) NOT NULL,
   `firstname` varchar(100) NOT NULL,
   `lastname` varchar(100) NOT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Users Table' AUTO_INCREMENT=2 ;
@@ -30,5 +30,5 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dump dei dati per la tabella `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `firstname`, `lastname`) VALUES
-(1, 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'System', 'Administrator');
+INSERT INTO `users` (`id`, `username`, `password`, `firstname`, `lastname`, `is_admin`) VALUES
+(1, 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'System', 'Administrator', 1);
