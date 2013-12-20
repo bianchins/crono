@@ -7,7 +7,7 @@ class Account extends REST_Controller {
          * @param GET token
          * @return object{status, object}
          */
-	public function index_get()
+	public function info_get()
 	{
             $response = new stdClass();
             
@@ -60,11 +60,11 @@ class Account extends REST_Controller {
          */
         public function login_post()
 	{
+            $response = new stdClass();
             //Parameters check
             if(!empty($this->post('username')) && !empty($this->post('password')) && !empty($this->post('client_secret_uuid')))
             {
                 $user = new User();
-                $response = stdClass();
                 $user->where('username', $this->post('username'))->where('password', sha1($this->post('password')))->get();
                 //Record found
                 if($user->exists()) 

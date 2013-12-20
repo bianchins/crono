@@ -7,6 +7,9 @@
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="assets/js/jquery.js"></script>
+        <script src="assets/js/jquery.cookie.js"></script>
+        <script src="assets/js/sha1.js"></script>
+        <script src="assets/js/crono.js"></script>
         <!-- Latest compiled and minified JavaScript -->
         <script src="assets/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="assets/css/login.css">
@@ -14,6 +17,19 @@
         <link href='http://fonts.googleapis.com/css?family=Maven+Pro' rel='stylesheet' type='text/css'>
     </head>
     <body>
+        <script>
+            $( document ).ready(function() {
+                $('#btn-login').click(function(event){
+                    event.preventDefault();
+                    crono.login($('#username').val(),$('#password').val());
+                });
+                $("form").submit(function (e) {
+                    e.preventDefault();
+                });
+                //TODO ajax API call to check session
+                //crono.check_session();
+            });
+        </script>  
     <div class="container">
         <div class="row">
             <div class="col-sm-6 col-md-4 col-md-offset-4">
@@ -21,9 +37,9 @@
                 <div class="account-wall">
                     <div class="login-logo">Cr<i class="fa fa-clock-o"></i>no</div>
                     <form class="form-signin">
-                    <input type="text" class="form-control" placeholder="Email" required autofocus>
-                    <input type="password" class="form-control" placeholder="Password" required>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                    <input type="text" class="form-control" placeholder="Email" required autofocus id="username">
+                    <input type="password" class="form-control" placeholder="Password" required id="password">
+                    <button class="btn btn-lg btn-primary btn-block" id="btn-login" type="button">Sign in</button>
                     <label class="checkbox pull-left">
                         <input type="checkbox" value="remember-me">
                         Remember me

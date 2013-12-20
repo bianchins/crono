@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crono Time Tracker - Loading...</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="assets/js/jquery.js"></script>
+        <script src="assets/js/jquery.cookie.js"></script>
+        <script src="assets/js/sha1.js"></script>
+        <script src="assets/js/crono.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="assets/css/login.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Maven+Pro' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <script>
+            $( document ).ready(function() {
+                $('#pleaseWaitDialog').modal('show');
+                //TODO ajax API call to check session
+                crono.check_session(true);
+            });
+        </script>   
+        
+        <!-- Modal -->
+        <div class="modal fade" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="text-align:center">
+                <h4 class="modal-title" id="myModalLabel"><span style="font-family: 'Maven Pro', sans-serif; font-size:36px;">Cr<i class="fa fa-clock-o"></i>no</span></h4>
+              </div>
+              <div class="modal-body">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                      <span class="sr-only">Loading</span>
+                    </div>
+                </div>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+ 
+    </body>
+</html>

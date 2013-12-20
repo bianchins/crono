@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crono Time Tracker - Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="assets/js/jquery.js"></script>
+        <script src="assets/js/jquery.cookie.js"></script>
+        <script src="assets/js/sha1.js"></script>
+        <script src="assets/js/chosen.jquery.min.js"></script>
+        <script src="assets/js/crono.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="assets/css/chosen.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Maven+Pro' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <script>
+            $( document ).ready(function() {
+                $('#btn-logout').click(function(event) {
+                   event.preventDefault();
+                   crono.logout();
+                });
+                $(".chosen-select").chosen();
+                $('#btn-start-stop').click(function(event){
+                   event.preventDefault();
+                   //TODO if a task is active, pick the start time and run flag from this (ajax call)
+                   if(crono.timer.run) {
+                       clearTimeout(crono.timer.timerID);
+                       crono.timer.run = false;
+                       $(this).html('<span class="fa fa-play"></span> Start');
+                       $(this).removeClass('btn-danger');
+                       $(this).addClass('btn-success');
+                   }
+                   else {
+                       crono.timer.start = new Date();
+                       crono.timer.timerID = setInterval(crono.timer.tick, 10);
+                       crono.timer.run = true;
+                       $(this).html('<span class="fa fa-stop"></span> Stop');
+                       $(this).removeClass('btn-success');
+                       $(this).addClass('btn-danger')
+                   }
+                });
+            });
+        </script> 
+            <nav class="navbar navbar-default navbar-static-top" role="navigation">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="timer.html" style="font-family: 'Maven Pro', sans-serif; font-size:20px;padding-bottom:6px;">Cr<i class="fa fa-clock-o"></i>no</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="timer.html"><span class="fa fa-play"></span> Timer</a></li>
+                        <li><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
+                        <li><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                            class="fa fa-bar-chart-o"></span> Reports <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="invoice.html"><span class="glyphicon glyphicon-euro"></span> Create invoice</a></li>
+                                <li class="divider"></li>
+                                <li><a href="stats.html"><span class="glyphicon glyphicon-stats"></span> Stats</a></li>
+                            </ul>
+                        </li>
+                        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="font-size:20px; line-height:12px;"><p class="navbar-text hide">
+                                <small><span id="project-timer">No task / No project</span></small>
+                                <span >00:00</span> 
+                                <a href="#" class="navbar-link" style="padding-left:5px; padding-right:10px;"><span class="fa fa-pause"></span></a>
+                            </p></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                            class="fa fa-user"></span> Admin <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Edit Account</a></li>
+                                <li><a href="#"><span class="glyphicon glyphicon-cog"></span> System Settings</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" id="btn-logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+        
+        
+        <div class="container">
+            
+            <div class="row">
+                <div class="col-md-12 well">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" placeholder="What are you going to do?"/>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="project_list" class="chosen-select form-control">
+                                <option value="">Select a project</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 text-center text-primary">
+                            <span id="home_timer" style="font-family: 'Arial'; font-weight: bold; font-size:24px;">00:00:00</span>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-block btn-success" id="btn-start-stop"><span class="fa fa-play"></span> Start</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">Last entries</h3>
+                        </div>
+                        <div class="panel-body">
+                          <div class="list-group">
+                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
+                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
+                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
+                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
+                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
+                            
+                          </div>
+                        </div>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">This week</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h4>Total time: 00:00</h4>
+                        </div>
+                  </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- footer-->
+        <div style="width:100%" class="text-center">
+                <a href="http://github.com/bianchins/crono" class="text-center new-account">About <span style="font-family: 'Maven Pro', sans-serif;">Cr<i class="fa fa-clock-o"></i>no </span></a>
+        </div> 
+        
+        
+    </body>
+</html>
