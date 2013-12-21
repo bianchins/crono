@@ -100,12 +100,20 @@
                             <input type="text" class="form-control" placeholder="What are you going to do?"/>
                         </div>
                         <div class="col-md-3">
-                            <select id="project_list" class="chosen-select form-control">
-                                <option value="">Select a project</option>
-                            </select>
+                            <select id="project_list" class="chosen-select form-control" style="width:80%" data-placeholder="Select a project">
+                                <option value=""></option>
+                            </select> 
+                            <button class="btn btn-default" id="btn-add-project"><span class="fa fa-plus"></span></button>
                         </div>
-                        <div class="col-md-2 text-center text-primary">
-                            <span id="home_timer" style="font-family: 'Arial'; font-weight: bold; font-size:24px;">00:00:00</span>
+                        <div class="col-md-2">
+                            <div class="row">
+                                <div class="col-md-9 text-primary text-center">
+                                    <span id="home_timer" style="font-family: 'Arial'; font-weight: bold; font-size:24px;">00:00:00</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary" id="btn-add-manual"><span class="fa fa-plus"></span></button>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <button class="btn btn-block btn-success" id="btn-start-stop"><span class="fa fa-play"></span> Start</button>

@@ -17,7 +17,7 @@ class Token extends DataMapper {
 	// --------------------------------------------------------------------
 
 	// Insert related models that Template can have just one of.
-	var $has_one = array();
+	var $has_one = array('user');
 
 	// Insert related models that Template can have more than one of.
 	var $has_many = array();
@@ -69,7 +69,7 @@ class Token extends DataMapper {
 
         public function get_by_valid_token($token)
         {
-            return $this->where("SHA1(CONCAT(token,client_secret_uuid))='".$token."' AND token_expire < CURRENT_TIMESTAMP");
+            return $this->where("SHA1(CONCAT(token,client_secret_uuid))='".$token."' AND token_expire < UNIX_TIMESTAMP(CURRENT_TIMESTAMP)");
         }
     
 	// --------------------------------------------------------------------
