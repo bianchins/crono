@@ -61,7 +61,6 @@
         };
        
         var uTF8Encode = function(string) {
-            console.log(string);
                 string = string.replace(/\x0d\x0a/g, "\x0a");
                 var output = "";
                 for (var n = 0; n < string.length; n++) {

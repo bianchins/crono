@@ -69,7 +69,7 @@ class Token extends DataMapper {
 
         public function get_by_valid_token($token)
         {
-            return $this->where("SHA1(CONCAT(token,client_secret_uuid))='".$token."' AND token_expire < UNIX_TIMESTAMP(CURRENT_TIMESTAMP)");
+            return $this->where("SHA1(CONCAT(token,client_secret_uuid))='".$token."' AND token_expire > UNIX_TIMESTAMP(CURRENT_TIMESTAMP)");
         }
     
 	// --------------------------------------------------------------------

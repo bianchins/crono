@@ -32,6 +32,64 @@ var crono = {
         }
     },
     
+    populateProjects: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/projects/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $('#project_list').html('');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            $('#project_list').append($('<option>', {
+                                value: json_response[i].id,
+                                text: json_response[i].name
+                            }));
+                        }
+                         $(".chosen-select").trigger("chosen:updated");    
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    addProject: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "POST",
+                url: '/crono/api/index.php/projects/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    name: $('#new_project_name').val(),
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateProjects();
+                        $('#new_project_name').val('');
+                        $('#modal_new_project').modal('hide');
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
     logout: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
