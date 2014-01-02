@@ -20,7 +20,7 @@ class User extends DataMapper {
 	var $has_one = array();
 
 	// Insert related models that Template can have more than one of.
-	var $has_many = array('token');
+	var $has_many = array();
 
 	/* Relationship Examples
 	 * For normal relationships, simply add the model name to the array:

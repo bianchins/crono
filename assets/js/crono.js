@@ -16,9 +16,16 @@ var crono = {
                     token: $.sha1(token+uuid),
                 }
                 }).done(function( json_response ) {
+                    //console.log(JSON.stringify(json_response));
                     if(json_response.status) {
                         $('#pleaseWaitDialog').modal('hide');
                         if(redirect_from_home) window.location.replace("timer.html"); 
+                        $('#navbar_user_firstname').text(json_response.firstname + ' ' + json_response.lastname);
+                        if(!json_response.is_admin) {
+                           $('.admin-only').addClass('disabled').click(function(event) {
+                              event.preventDefault(); 
+                           });
+                        }
                     } else {
                         window.location.replace("login.html");
                     }
@@ -42,7 +49,8 @@ var crono = {
                 dataType: "json" 
                 }).done(function( json_response ) {
                     if(!json_response.error) {
-                        $('#project_list').html('');
+                        //$('#project_list').html('');
+                        $('#project_list').find('option').remove();
                         for(var i=0; i<json_response.length; i++)
                         {
                             $('#project_list').append($('<option>', {
@@ -50,7 +58,9 @@ var crono = {
                                 text: json_response[i].name
                             }));
                         }
-                         $(".chosen-select").trigger("chosen:updated");    
+                        $(".chosen-select option[selected]").removeAttr("selected");
+                        $(".chosen-select").val('').trigger("chosen:updated"); 
+                        $(".chosen-select option[selected]").removeAttr("selected");
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -176,6 +186,41 @@ var crono = {
             min = (min < 10) ? "0" + min : min;
             hr = (hr < 10) ? "0" + hr : hr;
             $("#home_timer").text(hr+":"+min+":"+sec);
+            $("#project-timer").text(hr+":"+min+":"+sec);
+            $('#project-timer-name').text($('#task').val());
+            
         }
+    },
+    
+    loadAccountInfo: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/account/info/'+$.sha1(token+uuid),
+                dataType: "json"
+                }).done(function( json_response ) {
+                    console.log(JSON.stringify(json_response));
+                    if(json_response.status) {
+                        $('#edit-account-firstname').val(json_response.user.firstname);
+                        $('#edit-account-lastname').val(json_response.user.lastname);
+                        $('#edit-account-gitlab_private_key').val(json_response.user.gitlab_private_key);
+                    }
+                });
+         }
     }
-}
+};
+
+//Operations for every pages must be placed here 
+$( document ).ready(function() {
+    $('body').append($('<div id="modal_container"></div>'));
+    $('#btn_edit_settings').click(function(event) {
+       event.preventDefault();
+       $('#modal_container').load('account.html', function() {
+           $('#modal_edit_account').modal('show');
+           crono.loadAccountInfo();
+       }); 
+       
+    });
+});

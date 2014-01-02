@@ -7,12 +7,12 @@ class Account extends REST_Controller {
          * @param GET token
          * @return object{status, object}
          */
-	public function info_get()
+	public function info_get($token)
 	{
             $response = new stdClass();
             
             $token_entry = new Token();
-            $token_entry->get_by_valid_token($this->get('token'))->get();
+            $token_entry->get_by_valid_token($token)->get();
             if($token_entry->exists())
             {
                 $user = new User();
@@ -22,6 +22,7 @@ class Account extends REST_Controller {
                 $response->user->firstname = $user->firstname;
                 $response->user->lastname = $user->lastname;
                 $response->user->username = $user->username;
+                $response->user->gitlab_private_key = $user->gitlab_private_key;
             }
             else
             {
@@ -46,7 +47,12 @@ class Account extends REST_Controller {
             //Token found, session is ok
             if($token_entry->exists())
             {
+                $user = new User();
+                $user->get_by_id($token_entry->user_id);
                 $response->status=true;
+                $response->is_admin = ($user->is_admin) ? TRUE : FALSE;
+                $response->firstname = $user->firstname;
+                $response->lastname = $user->lastname;
             }
             $this->response($response);
         }
