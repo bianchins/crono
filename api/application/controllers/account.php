@@ -133,10 +133,57 @@ class Account extends REST_Controller {
         
         /**
          * Account edit
+         * @param PUT token
+         * @param PUT firstname
+         * @param PUT lastname
+         * @param PUT gitlab_private_key
+         * @return object{status}
          */
         public function index_put()
 	{
-            //TODO
+            $response = new stdClass();
+            
+            $token_entry = new Token();
+            $token_entry->get_by_valid_token($this->put('token'))->get();
+            if($token_entry->exists())
+            {
+                $user = new User();
+                $user->get_by_id($token_entry->user_id);
+                $user->firstname = $this->put('firstname');
+                $user->lastname = $this->put('lastname');
+                $user->gitlab_private_key = $this->put('gitlab_private_key');
+                
+                if($this->put('new_password')==$this->put('new_password_confirm')) 
+                {
+                    //Check if password has been changed
+                    if($this->put('new_password')) 
+                    {
+                       $user->password = sha1($this->put('new_password'));
+                    }
+                    //Try to save on db
+                    if($user->save()) 
+                    {
+                        $response->status=true;
+                    }
+                    else
+                    {
+                        $response->status=false;
+                        $response->error='Account info not saved';
+                    }
+                    
+                }
+                else
+                {
+                    $response->status=false;
+                    $response->error='Passwords did not match';
+                }
+            }
+            else 
+            {
+               $response->status=false;
+               $response->error='Token not found or session expired';
+            }
+            $this->response($response);
 	}
 }
 

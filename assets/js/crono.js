@@ -192,6 +192,32 @@ var crono = {
         }
     },
     
+    updateAccountInfo: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "PUT",
+                url: '/crono/api/index.php/account',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    firstname: $('#edit-account-firstname').val(),
+                    lastname: $('#edit-account-lastname').val(),
+                    gitlab_private_key: $('#edit-account-gitlab_private_key').val(),
+                    new_password: $('#edit-account-new-password').val(),
+                    new_password_confirm: $('#edit-account-new-password-confirm').val(),
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                       //ok
+                       crono.check_session(false);
+                       $('#modal_edit_account').modal('hide');
+                    }
+                });
+         }    
+    },
+    
     loadAccountInfo: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -201,7 +227,6 @@ var crono = {
                 url: '/crono/api/index.php/account/info/'+$.sha1(token+uuid),
                 dataType: "json"
                 }).done(function( json_response ) {
-                    console.log(JSON.stringify(json_response));
                     if(json_response.status) {
                         $('#edit-account-firstname').val(json_response.user.firstname);
                         $('#edit-account-lastname').val(json_response.user.lastname);
@@ -220,6 +245,10 @@ $( document ).ready(function() {
        $('#modal_container').load('account.html', function() {
            $('#modal_edit_account').modal('show');
            crono.loadAccountInfo();
+           $('#btn_update_account_info').click(function(event) {
+              event.preventDefault();
+              crono.updateAccountInfo();
+           });
        }); 
        
     });
