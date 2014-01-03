@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Crono Time Tracker - Dashboard</title>
+        <title>Crono Time Tracker - Projects</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -26,44 +26,21 @@
                    crono.logout();
                 });
                 $(".chosen-select").chosen();
+                
                 $('#btn-add-project').click(function(event){
                     
                    $('#modal_container').load('modal/new_project.html', function() {
                         event.preventDefault();
                         $('#btn_save_new_project').click(function(event) {
                             event.preventDefault();
-                            crono.addProject(true);
+                            crono.addProject(false);
                         });
                         $('#modal_new_project').modal('show');
                    }); 
-                   
+                    
                 });
-                crono.populateProjects();
-                $('#btn-start-stop').click(function(event){
-                   event.preventDefault();
-                   //TODO if a task is active, pick the start time and run flag from this (ajax call)
-                   if(crono.timer.run) {
-                       clearTimeout(crono.timer.timerID);
-                       crono.timer.run = false;
-                       $(this).html('<span class="fa fa-play"></span> Start');
-                       $(this).removeClass('btn-danger');
-                       $(this).addClass('btn-success');
-                       $('#navbar_timer').addClass('hide');
-                       
-                       //Ajax stopping timer
-                       $("#home_timer").text("00:00:00");
-                   }
-                   else {
-                       crono.timer.start = new Date();
-                       crono.timer.timerID = setInterval(crono.timer.tick, 10);
-                       crono.timer.run = true;
-                       $(this).html('<span class="fa fa-stop"></span> Stop');
-                       $(this).removeClass('btn-success');
-                       $(this).addClass('btn-danger');
-                       $('#navbar_timer').removeClass('hide');
-                       //Ajax startinh timer
-                   }
-                });
+                crono.populateProjectsTable();
+                
             });
         </script> 
             <nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -77,8 +54,8 @@
                 </div>
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="timer.html"><span class="fa fa-play"></span> Timer</a></li>
-                        <li><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
+                        <li><a href="timer.html"><span class="fa fa-play"></span> Timer</a></li>
+                        <li class="active"><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
                         <li><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                             class="fa fa-bar-chart-o"></span> Reports <b class="caret"></b></a>
@@ -116,63 +93,30 @@
         <div class="container">
             
             <div class="row">
-                <div class="col-md-12 well">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" id="task" placeholder="What are you going to do?"/>
-                        </div>
-                        <div class="col-md-3">
-                            <select id="project_list" class="chosen-select form-control" style="width:80%" data-placeholder="Select a project">
-                            </select> 
-                            <button class="btn btn-default" id="btn-add-project"><span class="fa fa-plus"></span></button>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="row">
-                                <div class="col-md-9 text-primary text-center">
-                                    <span id="home_timer" style="font-family: 'Arial'; font-weight: bold; font-size:24px;">00:00:00</span>
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-primary" id="btn-add-manual"><span class="fa fa-plus"></span></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-block btn-success" id="btn-start-stop"><span class="fa fa-play"></span> Start</button>
-                        </div>
-                    </div>
+                <div class="col-md-12">
+                    
+                    <h1><span class="fa fa-tasks"></span> Projects <button class="btn btn-default pull-right" id="btn-add-project"><span class="fa fa-plus"></span> Add project</button></h1>
+                    <div class="clearfix"></div>
+                    <table class="table table-striped" id="project-list-table">
+                    <thead>
+                      <tr>
+                        <th>Project name</th>
+                        <th>Customer</th>
+                        <th>Status</th>
+                        <th>Manage</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr id="row_no_projects">
+                          <td colspan="5">No projects yet</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                    
                     
                 </div>
             </div>
             
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                          <h3 class="panel-title">Last entries</h3>
-                        </div>
-                        <div class="panel-body">
-                          <div class="list-group">
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            
-                          </div>
-                        </div>
-                  </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                          <h3 class="panel-title">This week</h3>
-                        </div>
-                        <div class="panel-body">
-                            <h4>Total time: 00:00</h4>
-                        </div>
-                  </div>
-                </div>
-            </div>
             
         </div>
 
@@ -180,6 +124,6 @@
         <div style="width:100%" class="text-center">
                 <a href="http://github.com/bianchins/crono" class="text-center new-account">About <span style="font-family: 'Maven Pro', sans-serif;">Cr<i class="fa fa-clock-o"></i>no </span></a>
         </div> 
-        
+ 
     </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 
 
-class Project extends DataMapper {
+class Customer extends DataMapper {
 
 	// Uncomment and edit these two if the class has a model name that
 	//   doesn't convert properly using the inflector_helper.
@@ -17,10 +17,10 @@ class Project extends DataMapper {
 	// --------------------------------------------------------------------
 
 	// Insert related models that Template can have just one of.
-	var $has_one = array('customer');
+	var $has_one = array();
 
 	// Insert related models that Template can have more than one of.
-	var $has_many = array();
+	var $has_many = array('project');
 
 	/* Relationship Examples
 	 * For normal relationships, simply add the model name to the array:
@@ -46,9 +46,9 @@ class Project extends DataMapper {
 	// --------------------------------------------------------------------
 
 	var $validation = array(
-		'name' => array(
+		'customer_name' => array(
 			'rules' => array('required', 'max_length' => 150),
-			'label' => 'Project Name'
+			'label' => 'Customer Name'
 		),
 	);
 

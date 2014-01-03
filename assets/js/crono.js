@@ -39,6 +39,37 @@ var crono = {
         }
     },
     
+    populateProjectsTable: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/projects/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $('#project-list-table tbody').html('');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            var status = (json_response[i].closed) ? 'Closed' : 'Open';
+                            var row = $('<tr><td>'+json_response[i].name+'</td><td>'+json_response[i].customer_name+'</td><td>'+status+'</td></tr>');
+                            var manage_col = $('<td></td>');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-warning" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-danger" id="btn-delete-'+json_response[i].id+'" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
+                            row.append(manage_col);
+                            $('#project-list-table tbody').append(row);
+                        }
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }    
+    },
+    
     populateProjects: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -71,7 +102,7 @@ var crono = {
         }
     },
     
-    addProject: function() {
+    addProject: function(from_dashboard) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
         if(token && uuid) {
@@ -85,7 +116,8 @@ var crono = {
                 }
                 }).done(function( json_response ) {
                     if(json_response.status) {
-                        crono.populateProjects();
+                        if(from_dashboard) crono.populateProjects();
+                        else crono.populateProjectsTable();
                         $('#new_project_name').val('');
                         $('#modal_new_project').modal('hide');
                     } else {
@@ -240,9 +272,10 @@ var crono = {
 //Operations for every pages must be placed here 
 $( document ).ready(function() {
     $('body').append($('<div id="modal_container"></div>'));
+
     $('#btn_edit_settings').click(function(event) {
        event.preventDefault();
-       $('#modal_container').load('account.html', function() {
+       $('#modal_container').load('modal/account.html', function() {
            $('#modal_edit_account').modal('show');
            crono.loadAccountInfo();
            $('#btn_update_account_info').click(function(event) {

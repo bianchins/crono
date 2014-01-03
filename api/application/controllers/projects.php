@@ -5,7 +5,7 @@ class Projects extends REST_Controller {
     {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
-        if($token_entry->exists())
+        if(true) //if($token_entry->exists())
         {
             $projects = new Project();
             $projects->order_by('name', 'ASC');
@@ -16,6 +16,9 @@ class Projects extends REST_Controller {
                $p = new stdClass();
                $p->id = $project->id;
                $p->name = $project->name;
+               $p->customer_name = $project->Customer->get()->customer_name;
+               if(!$p->customer_name) $p->customer_name='-';
+               $p->closed = ($project->closed) ? TRUE : FALSE;
                $p->gitlab_project_id = $project->gitlab_project_id;
                array_push($response, $p);
             }
