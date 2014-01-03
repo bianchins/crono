@@ -9,7 +9,7 @@
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/jquery.cookie.js"></script>
         <script src="assets/js/sha1.js"></script>
-        <script src="assets/js/chosen.jquery.min.js"></script>
+        <script src="assets/js/chosen.jquery.js"></script>
         <script src="assets/js/crono.js"></script>
         <!-- Latest compiled and minified JavaScript -->
         <script src="assets/js/bootstrap.min.js"></script>
@@ -31,6 +31,7 @@
                     
                    $('#modal_container').load('modal/new_project.html', function() {
                         event.preventDefault();
+                        $('#customer_list').chosen();
                         $('#btn_save_new_project').click(function(event) {
                             event.preventDefault();
                             crono.addProject(false);

@@ -9,7 +9,7 @@
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/jquery.cookie.js"></script>
         <script src="assets/js/sha1.js"></script>
-        <script src="assets/js/chosen.jquery.min.js"></script>
+        <script src="assets/js/chosen.jquery.js"></script>
         <script src="assets/js/crono.js"></script>
         <!-- Latest compiled and minified JavaScript -->
         <script src="assets/js/bootstrap.min.js"></script>
@@ -30,6 +30,7 @@
                     
                    $('#modal_container').load('modal/new_project.html', function() {
                         event.preventDefault();
+                        $('#customer_list').chosen();
                         $('#btn_save_new_project').click(function(event) {
                             event.preventDefault();
                             crono.addProject(true);
@@ -124,7 +125,7 @@
                         <div class="col-md-3">
                             <select id="project_list" class="chosen-select form-control" style="width:80%" data-placeholder="Select a project">
                             </select> 
-                            <button class="btn btn-default" id="btn-add-project"><span class="fa fa-plus"></span></button>
+                            <button class="btn btn-default" id="btn-add-project" data-toggle="tooltip" data-container="body" title="Add project"><span class="fa fa-plus"></span></button>
                         </div>
                         <div class="col-md-2">
                             <div class="row">
@@ -132,7 +133,7 @@
                                     <span id="home_timer" style="font-family: 'Arial'; font-weight: bold; font-size:24px;">00:00:00</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <button class="btn btn-primary" id="btn-add-manual"><span class="fa fa-plus"></span></button>
+                                    <button class="btn btn-primary" id="btn-add-manual" data-toggle="tooltip" data-container="body" title="Add manual entry"><span class="fa fa-plus"></span></button>
                                 </div>
                             </div>
                         </div>

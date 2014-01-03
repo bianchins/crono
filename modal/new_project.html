@@ -8,6 +8,16 @@
               <div class="modal-body">
                   <label>Insert a name for the new project</label>
                   <input type="text" id="new_project_name" class="form-control"/>
+                  <label>Customer (optional)</label>
+                  <div class="row">
+                      <div class="col-md-12">
+                          <select id="customer_list" class="chosen-select form-control" style="width:500px;display:inline" data-placeholder="Select a customer">
+                              <option value="">No customer</option>
+                          </select> 
+                           <button class="btn btn-default" id="btn-add-customer" title="Add customer"><span class="fa fa-plus"></span></button>
+                      </div>
+                  </div>
+                 
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -1,11 +1,32 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Projects extends REST_Controller {
+    
+    public function info_get($id, $token) 
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $projects = new Project();
+            $projects->get_by_id($id);
+            //TODO
+            $this->response($response);
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+            $this->response($response);
+        }   
+    }
+    
     public function all_get($token) 
     {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
-        if(true) //if($token_entry->exists())
+        if($token_entry->exists())
         {
             $projects = new Project();
             $projects->order_by('name', 'ASC');
