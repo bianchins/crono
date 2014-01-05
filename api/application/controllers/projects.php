@@ -100,7 +100,41 @@ class Projects extends REST_Controller {
         }
     }
     
-    
+    /**
+     * Edit a project
+     * @route PUT projects
+     */
+    public function index_put()
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->put('token'))->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $project = new Project();
+            $project->get_by_id($this->put('id'));
+            $project->name=$this->put('name');
+            $project->customer_id=$this->put('customer_id');
+            $project->closed=$this->put('closed');
+            if($project->save())
+            {
+                $response->status=true;
+            }
+            else 
+            {
+                $response->status=false;
+                $response->error='Project not saved!';
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
+    }
+
+
     /**
      * Create a new project
      * @route POST projects/
