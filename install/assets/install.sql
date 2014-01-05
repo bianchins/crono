@@ -3,13 +3,11 @@
 -- Struttura della tabella `projects`
 --
 
-CREATE TABLE IF NOT EXISTS `projects` (
+CREATE TABLE IF NOT EXISTS `customers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `gitlab_project_id` int(11) NOT NULL,
+  `customer_name` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Projects table' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -37,6 +35,25 @@ CREATE TABLE IF NOT EXISTS `tokens` (
   PRIMARY KEY (`token`,`client_secret_uuid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tokens table (Auth for API)';
 
+
+CREATE TABLE IF NOT EXISTS `customers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_name` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE IF NOT EXISTS `timer_entries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `task` varchar(255) NOT NULL,
+  `start_time` int(11) NOT NULL DEFAULT '0',
+  `stop_time` int(11) NOT NULL DEFAULT '0',
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Struttura della tabella `users`
