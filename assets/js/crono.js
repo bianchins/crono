@@ -56,10 +56,15 @@ var crono = {
                             var row = $('<tr><td>'+json_response[i].name+'</td><td>'+json_response[i].customer_name+'</td><td>'+status+'</td></tr>');
                             var manage_col = $('<td></td>');
                             manage_col.append('<a href="#" class="btn btn-sm btn-warning" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
-                            manage_col.append('<a href="#" class="btn btn-sm btn-danger" id="btn-delete-'+json_response[i].id+'" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-project" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
                             row.append(manage_col);
                             $('#project-list-table tbody').append(row);
                         }
+                        $('.btn-delete-project').click(function(event) {
+                           event.preventDefault();
+                           var id = $(this).attr('data-id');
+                           crono.deleteProject(id);
+                        });
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -80,7 +85,6 @@ var crono = {
                 dataType: "json" 
                 }).done(function( json_response ) {
                     if(!json_response.error) {
-                        //$('#project_list').html('');
                         $('#project_list').find('option').remove();
                         for(var i=0; i<json_response.length; i++)
                         {
@@ -122,6 +126,30 @@ var crono = {
                         $('#modal_new_project').modal('hide');
                     } else {
                         //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    deleteProject: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "DELETE",
+                url: '/crono/api/index.php/project/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json",
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateProjectsTable();
+                    } else {
+                        //TODO Error handler
+                        console.log('Error during deleting project');
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );

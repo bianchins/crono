@@ -41,6 +41,10 @@
 $route['default_controller'] = "welcome";
 $route['404_override'] = '';
 
+//Route for DELETE and GET
+//for example GET project/1/token
+$route['project/(:num)/(:any)'] = "projects/project/$1/$2";
+
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

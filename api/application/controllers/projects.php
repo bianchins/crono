@@ -2,7 +2,13 @@
 
 class Projects extends REST_Controller {
     
-    public function info_get($id, $token) 
+    /**
+     * Project information
+     * @route GET project/$id/$token (rewritten by codeigniter route)
+     * @param type $id
+     * @param type $token
+     */
+    public function project_get($id, $token) 
     {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
@@ -12,6 +18,15 @@ class Projects extends REST_Controller {
             $projects = new Project();
             $projects->get_by_id($id);
             //TODO
+            $p = new stdClass();
+            $p->id = $project->id;
+            $p->name = $project->name;
+            $p->customer_name = $project->Customer->get()->customer_name;
+            if(!$p->customer_name) $p->customer_name='-';
+            $p->closed = ($project->closed) ? TRUE : FALSE;
+            $p->gitlab_project_id = $project->gitlab_project_id;
+            $response->status = true;
+            $response->project = $p;
             $this->response($response);
         }
         else 
@@ -22,6 +37,37 @@ class Projects extends REST_Controller {
         }   
     }
     
+    /**
+     * Delete a project
+     * @route DELETE project/$id/$token (rewritten by codeigniter route)
+     * @param type $id
+     * @param type $token
+     */
+    public function project_delete($id, $token)
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $projects = new Project();
+            $projects->get_by_id($id);
+            $projects->delete();
+            $response->status=TRUE;
+            $this->response($response);
+        }
+        else 
+        {
+            $response->status=FALSE;
+            $response->error='Token not found or session expired';
+            $this->response($response);
+        } 
+    }
+    /**
+     * Projects list
+     * @route GET projects all
+     * @param type $token
+     */
     public function all_get($token) 
     {
         $token_entry = new Token();
@@ -54,6 +100,11 @@ class Projects extends REST_Controller {
         }
     }
     
+    
+    /**
+     * Create a new project
+     * @route POST projects/
+     */
     public function index_post()
     {
         $token_entry = new Token();
