@@ -31,7 +31,7 @@
                     
                    $('#modal_container').load('modal/new_project.html', function() {
                         event.preventDefault();
-                        $('#customer_list').chosen();
+                        $('#new_project_customer_list').chosen();
                         $('#btn_save_new_project').click(function(event) {
                             event.preventDefault();
                             crono.addProject(false);

@@ -7,17 +7,22 @@ class Timer extends REST_Controller {
         
     }
     
-    public function active_get()
+    public function active_get($token)
     {
         
     }
     
-    public function all_get()
+    public function all_get($token)
     {
         
     }
     
     public function index_put()
+    {
+        
+    }
+    
+    public function delete_delete($id, $token)
     {
         
     }

@@ -55,7 +55,7 @@ var crono = {
                             var status = (json_response[i].closed) ? 'Closed' : 'Open';
                             var row = $('<tr><td>'+json_response[i].name+'</td><td>'+json_response[i].customer_name+'</td><td>'+status+'</td></tr>');
                             var manage_col = $('<td></td>');
-                            manage_col.append('<a href="#" class="btn btn-sm btn-warning" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-warning btn-edit-project" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
                             manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-project" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
                             row.append(manage_col);
                             $('#project-list-table tbody').append(row);
@@ -64,6 +64,14 @@ var crono = {
                            event.preventDefault();
                            var id = $(this).attr('data-id');
                            crono.deleteProject(id);
+                        });
+                        
+                        $('.btn-edit-project').click(function(event) {
+                           event.preventDefault();
+                           $('#modal_container').load('modal/edit_project.html', function() {
+                               $('#edit_project_customer_list').chosen();
+                               $('#modal_edit_project').modal('show');
+                           });
                         });
                     }
              }).fail(function(jqXHR, textStatus) {

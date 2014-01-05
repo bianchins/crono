@@ -1,17 +1,17 @@
-        <div class="modal fade" id="modal_new_project">
+        <div class="modal fade" id="modal_edit_project">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">New Project</h4>
+                <h4 class="modal-title">Edit Project</h4>
               </div>
               <div class="modal-body">
-                  <label>Insert a name for the new project</label>
-                  <input type="text" id="new_project_name" class="form-control"/>
-                  <label>Customer <small>(optional)</small></label>
+                  <label>Project's name</label>
+                  <input type="text" id="edit_project_name" class="form-control"/>
+                  <label>Customer (optional)</label>
                   <div class="row">
                       <div class="col-md-12">
-                          <select id="new_project_customer_list" class="chosen-select form-control" style="width:500px;display:inline" data-placeholder="Select a customer">
+                          <select id="edit_project_customer_list" class="chosen-select form-control" style="width:500px;display:inline" data-placeholder="Select a customer">
                               <option value="">No customer</option>
                           </select> 
                            <button class="btn btn-default" id="btn-add-customer" title="Add customer"><span class="fa fa-plus"></span></button>
@@ -21,7 +21,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="btn_save_new_project"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+                <button type="button" class="btn btn-success" id="btn_save_edit_project"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
