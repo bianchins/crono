@@ -55,7 +55,7 @@ var crono = {
                             var status = (json_response[i].closed) ? 'Closed' : 'Open';
                             var row = $('<tr><td>'+json_response[i].name+'</td><td>'+json_response[i].customer_name+'</td><td>'+status+'</td></tr>');
                             var manage_col = $('<td></td>');
-                            manage_col.append('<a href="#" class="btn btn-sm btn-warning btn-edit-project" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-warning btn-edit-project" data-id="'+json_response[i].id+'" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
                             manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-project" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
                             row.append(manage_col);
                             $('#project-list-table tbody').append(row);
@@ -68,8 +68,16 @@ var crono = {
                         
                         $('.btn-edit-project').click(function(event) {
                            event.preventDefault();
+                           var id = $(this).attr('data-id');
                            $('#modal_container').load('modal/edit_project.html', function() {
-                               $('#edit_project_customer_list').chosen();
+                               $('#edit_project_customer_list').chosen({allow_single_deselect:true});
+                               $('#edit_project_status').chosen({disable_search_threshold: 3});
+                               $('#btn_save_edit_project').attr('data-id', id);
+                               crono.readProject(id);
+                               $('#btn_save_edit_project').click(function(event){
+                                   event.preventDefault();
+                                   crono.updateProject($(this).attr('data-id'));
+                               });
                                $('#modal_edit_project').modal('show');
                            });
                         });
@@ -94,6 +102,7 @@ var crono = {
                 }).done(function( json_response ) {
                     if(!json_response.error) {
                         $('#project_list').find('option').remove();
+                        $('#project_list').append($('<option></option>'));
                         for(var i=0; i<json_response.length; i++)
                         {
                             $('#project_list').append($('<option>', {
@@ -125,6 +134,7 @@ var crono = {
                 data: {
                     token: $.sha1(token+uuid),
                     name: $('#new_project_name').val(),
+                    customer_id: $('#new_project_customer_list').val()
                 }
                 }).done(function( json_response ) {
                     if(json_response.status) {
@@ -134,6 +144,65 @@ var crono = {
                         $('#modal_new_project').modal('hide');
                     } else {
                         //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    updateProject: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "PUT",
+                url: '/crono/api/index.php/projects/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    id: id,
+                    name: $('#edit_project_name').val(),
+                    customer_id: $('#edit_project_customer_list').val(),
+                    closed: $('#edit_project_status').val()
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateProjectsTable();
+                        $('#modal_edit_project').modal('hide');
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+     readProject: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/project/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json",
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        $('#edit_project_name').val(json_response.project.name);
+                        console.log(json_response.project.status);
+                        $('#edit_project_status').val(json_response.project.status).trigger('chosen:updated');
+                        $('#new_project_customer_list').val(json_response.project.customer_id).trigger('chosen:updated');
+                    } else {
+                        //TODO Error handler
+                        console.log('Error during deleting project');
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );

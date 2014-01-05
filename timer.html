@@ -25,7 +25,7 @@
                    event.preventDefault();
                    crono.logout();
                 });
-                $(".chosen-select").chosen();
+                $(".chosen-select").chosen({allow_single_deselect: true});
                 $('#btn-add-project').click(function(event){
                     
                    $('#modal_container').load('modal/new_project.html', function() {
@@ -50,7 +50,7 @@
                        $(this).removeClass('btn-danger');
                        $(this).addClass('btn-success');
                        $('#navbar_timer').addClass('hide');
-                       
+                       $(".chosen-select").val('').trigger('chosen:updated');
                        //Ajax stopping timer
                        $("#home_timer").text("00:00:00");
                    }
