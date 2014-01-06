@@ -37,6 +37,19 @@
                             event.preventDefault();
                             crono.addProject(true);
                         });
+                        $('#btn-add-customer').click(function(event){
+                            event.preventDefault();
+                            $('#btn-save-new-customer').removeClass('hide');
+                            $('#new_customer_name').removeClass('hide');
+                            $('#btn-add-customer').hide();
+                        });
+                        $('#btn-save-new-customer').click(function(event){
+                            event.preventDefault();
+                            $('#btn-save-new-customer').addClass('hide');
+                            $('#new_customer_name').addClass('hide');
+                            $('#btn-add-customer').show();
+                            crono.addCustomer(true);
+                        });
                         $('#modal_new_project').modal('show');
                    }); 
                    

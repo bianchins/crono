@@ -75,7 +75,7 @@ var crono = {
                                crono.readCustomer(id);
                                $('#btn_save_edit_customer').click(function(event){
                                    event.preventDefault();
-                                   //crono.updateCustomer($(this).attr('data-id'));
+                                   crono.updateCustomer($(this).attr('data-id'));
                                });
                                $('#modal_edit_customer').modal('show');
                            });
@@ -145,7 +145,7 @@ var crono = {
         }    
     },
     
-    populateCustomers: function(chosen_element) {
+    populateCustomers: function(chosen_element, choice) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
         if(token && uuid) {
@@ -164,7 +164,8 @@ var crono = {
                                 text: json_response[i].customer_name
                             }));
                         }
-                        $(chosen_element).val('').trigger("chosen:updated"); 
+                        if(choice!=null) $(chosen_element).val(choice).trigger("chosen:updated");
+                        else $(chosen_element).val('').trigger("chosen:updated"); 
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -220,13 +221,66 @@ var crono = {
                 }).done(function( json_response ) {
                     if(json_response.status) {
                         if(from_project) {
-                            crono.populateCustomers('#new_project_customer_list');
+                            crono.populateCustomers('#new_project_customer_list', json_response.last_inserted_id);
                         }
                         else crono.populateCustomersTable();
-                        console.log(json_response.last_inserted_id);
                         
                         $('#new_customer_name').val('');
                         $('#modal_new_customer').modal('hide');
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    readCustomer: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/customer/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json",
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        $('#edit_customer_name').val(json_response.customer.customer_name);
+                    } else {
+                        //TODO Error handler
+                        console.log('Error during deleting project');
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+     updateCustomer: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "PUT",
+                url: '/crono/api/index.php/customers/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    id: id,
+                    customer_name: $('#edit_customer_name').val(),
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateCustomersTable();
+                        $('#modal_edit_customer').modal('hide');
                     } else {
                         //Error handler
                     }

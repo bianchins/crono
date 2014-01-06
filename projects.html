@@ -33,7 +33,7 @@
                         event.preventDefault();
                         $('#new_project_customer_list').chosen({allow_single_deselect: true});
                         $('#new_project_status').chosen({disable_search_threshold: 3});
-                        crono.populateCustomers('#new_project_customer_list');
+                        crono.populateCustomers('#new_project_customer_list', null);
                         $('#btn_save_new_project').click(function(event) {
                             event.preventDefault();
                             crono.addProject(false);
@@ -49,7 +49,7 @@
                             $('#btn-save-new-customer').addClass('hide');
                             $('#new_customer_name').addClass('hide');
                             $('#btn-add-customer').show();
-                            //TODO save a new customer and update customer list (selecting the new customer)
+                            crono.addCustomer(true);
                         });
                         
                         $('#modal_new_project').modal('show');

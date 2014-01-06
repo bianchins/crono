@@ -3,6 +3,37 @@
 class Customers extends REST_Controller {
     
     /**
+     * Customer information
+     * @route GET customer/$id/$token (rewritten by codeigniter route)
+     * @param type $id
+     * @param type $token
+     */
+    public function customer_get($id, $token) 
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $customer = new Customer();
+            $customer->get_by_id($id);
+            //TODO
+            $c = new stdClass();
+            $c->id = $customer->id;
+            $c->customer_name = $customer->customer_name;
+            $response->status = true;
+            $response->customer = $c;
+            $this->response($response);
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+            $this->response($response);
+        }   
+    }
+    
+    /**
      * Customers list
      * @route GET customers all
      * @param type $token
@@ -68,7 +99,39 @@ class Customers extends REST_Controller {
     }
     
     /**
-     * Delete a customr
+     *  Edit customer
+     * @route PUT customers/
+     */
+    public function index_put()
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->put('token'))->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $customer = new Customer();
+            $customer->get_by_id($this->put('id'));
+            $customer->customer_name=$this->put('customer_name');
+            if($customer->save())
+            {
+                $response->status=true;
+            }
+            else 
+            {
+                $response->status=false;
+                $response->error='Customer not saved!';
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
+    }
+    
+    /**
+     * Delete a customer
      * @route DELETE customer/$id/$token (rewritten by codeigniter route)
      * @param type $id
      * @param type $token
