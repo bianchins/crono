@@ -39,6 +39,57 @@ var crono = {
         }
     },
     
+    populateCustomersTable: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/customers/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $('#customer-list-table tbody').html('');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            var row = $('<tr><td>'+json_response[i].customer_name+'</td></tr>');
+                            var manage_col = $('<td></td>');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-warning btn-edit-customer" data-id="'+json_response[i].id+'" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-customer" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
+                            row.append(manage_col);
+                            $('#customer-list-table tbody').append(row);
+                        }
+                        $('.btn-delete-customer').click(function(event) {
+                            event.preventDefault();
+                            if(confirm('Are you sure to delete this customer?')) {
+                               var id = $(this).attr('data-id');
+                               crono.deleteCustomer(id);
+                            }
+                        });
+                        
+                        $('.btn-edit-customer').click(function(event) {
+                           event.preventDefault();
+                           var id = $(this).attr('data-id');
+                           $('#modal_container').load('modal/edit_customer.html', function() {
+                               $('#btn_save_edit_customer').attr('data-id', id);
+                               crono.readCustomer(id);
+                               $('#btn_save_edit_customer').click(function(event){
+                                   event.preventDefault();
+                                   //crono.updateCustomer($(this).attr('data-id'));
+                               });
+                               $('#modal_edit_customer').modal('show');
+                           });
+                        });
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }    
+    },
+    
     populateProjectsTable: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -62,8 +113,10 @@ var crono = {
                         }
                         $('.btn-delete-project').click(function(event) {
                            event.preventDefault();
-                           var id = $(this).attr('data-id');
-                           crono.deleteProject(id);
+                           if(confirm('Are you sure to delete this project?')) {
+                               var id = $(this).attr('data-id');
+                               crono.deleteProject(id);
+                           }
                         });
                         
                         $('.btn-edit-project').click(function(event) {
@@ -142,6 +195,64 @@ var crono = {
                             }));
                         }
                         $('#project_list').val('').trigger("chosen:updated");
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    addCustomer: function(from_project) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "POST",
+                url: '/crono/api/index.php/customers/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    customer_name: $('#new_customer_name').val()
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        if(from_project) {
+                            crono.populateCustomers('#new_project_customer_list');
+                        }
+                        else crono.populateCustomersTable();
+                        console.log(json_response.last_inserted_id);
+                        
+                        $('#new_customer_name').val('');
+                        $('#modal_new_customer').modal('hide');
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    deleteCustomer: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "DELETE",
+                url: '/crono/api/index.php/customer/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json",
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateCustomersTable();
+                    } else {
+                        //TODO Error handler
+                        console.log('Error during deleting customer');
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );

@@ -3,8 +3,8 @@
 class Customers extends REST_Controller {
     
     /**
-     * Projects list
-     * @route GET projects all
+     * Customers list
+     * @route GET customers all
      * @param type $token
      */
     public function all_get($token) 
@@ -35,5 +35,64 @@ class Customers extends REST_Controller {
         }
     }
     
+    /**
+     * Create a new customer
+     * @route POST customers/
+     */
+    public function index_post()
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->post('token'))->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $customer = new Customer();
+            $customer->customer_name=$this->post('customer_name');
+            if($customer->save())
+            {
+                $response->status=true;
+                $response->last_inserted_id = $customer->id;
+            }
+            else 
+            {
+                $response->status=false;
+                $response->error='Customer not saved!';
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
+    }
+    
+    /**
+     * Delete a customr
+     * @route DELETE customer/$id/$token (rewritten by codeigniter route)
+     * @param type $id
+     * @param type $token
+     */
+    public function customer_delete($id, $token)
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $customer = new Customer();
+            $customer->get_by_id($id);
+            $customer->delete();
+            $response->status=TRUE;
+            $this->response($response);
+        }
+        else 
+        {
+            $response->status=FALSE;
+            $response->error='Token not found or session expired';
+            $this->response($response);
+        } 
+    }
+
     
 }

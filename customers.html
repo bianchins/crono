@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Crono Time Tracker - Projects</title>
+        <title>Crono Time Tracker - Customers</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -27,36 +27,19 @@
                 });
                 $(".chosen-select").chosen({allow_single_deselect: true});
                 
-                $('#btn-add-project').click(function(event){
+                $('#btn-add-customer').click(function(event){
                     
-                   $('#modal_container').load('modal/new_project.html', function() {
+                   $('#modal_container').load('modal/new_customer.html', function() {
                         event.preventDefault();
-                        $('#new_project_customer_list').chosen({allow_single_deselect: true});
-                        $('#new_project_status').chosen({disable_search_threshold: 3});
-                        crono.populateCustomers('#new_project_customer_list');
-                        $('#btn_save_new_project').click(function(event) {
+                        $('#btn_save_new_customer').click(function(event) {
                             event.preventDefault();
-                            crono.addProject(false);
+                            crono.addCustomer(false);
                         });
-                        $('#btn-add-customer').click(function(event){
-                            event.preventDefault();
-                            $('#btn-save-new-customer').removeClass('hide');
-                            $('#new_customer_name').removeClass('hide');
-                            $('#btn-add-customer').hide();
-                        });
-                        $('#btn-save-new-customer').click(function(event){
-                            event.preventDefault();
-                            $('#btn-save-new-customer').addClass('hide');
-                            $('#new_customer_name').addClass('hide');
-                            $('#btn-add-customer').show();
-                            //TODO save a new customer and update customer list (selecting the new customer)
-                        });
-                        
-                        $('#modal_new_project').modal('show');
+                        $('#modal_new_customer').modal('show');
                    }); 
                     
                 });
-                crono.populateProjectsTable();
+                crono.populateCustomersTable();
                 
             });
         </script> 
@@ -72,8 +55,8 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="timer.html"><span class="fa fa-play"></span> Timer</a></li>
-                        <li class="active"><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
-                        <li><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
+                        <li><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
+                        <li class="active"><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                             class="fa fa-bar-chart-o"></span> Reports <b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -112,20 +95,18 @@
             <div class="row">
                 <div class="col-md-12">
                     
-                    <h1><span class="fa fa-tasks"></span> Projects <button class="btn btn-default pull-right" id="btn-add-project"><span class="fa fa-plus"></span> Add project</button></h1>
+                    <h1><span class="fa fa-tasks"></span> Customers <button class="btn btn-default pull-right" id="btn-add-customer"><span class="fa fa-plus"></span> Add customer</button></h1>
                     <div class="clearfix"></div>
-                    <table class="table table-striped" id="project-list-table">
+                    <table class="table table-striped" id="customer-list-table">
                     <thead>
                       <tr>
-                        <th>Project name</th>
-                        <th>Customer</th>
-                        <th>Status</th>
+                        <th>Customer's name</th>
                         <th>Manage</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr id="row_no_projects">
-                          <td colspan="5">No projects yet</td>
+                          <td colspan="2">No customers yet</td>
                       </tr>
                     </tbody>
                   </table>

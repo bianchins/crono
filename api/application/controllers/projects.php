@@ -64,6 +64,7 @@ class Projects extends REST_Controller {
             $this->response($response);
         } 
     }
+    
     /**
      * Projects list
      * @route GET projects all
