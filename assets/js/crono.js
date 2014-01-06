@@ -72,6 +72,7 @@ var crono = {
                            $('#modal_container').load('modal/edit_project.html', function() {
                                $('#edit_project_customer_list').chosen({allow_single_deselect:true});
                                $('#edit_project_status').chosen({disable_search_threshold: 3});
+                               crono.populateCustomers('#edit_project_customer_list');
                                $('#btn_save_edit_project').attr('data-id', id);
                                crono.readProject(id);
                                $('#btn_save_edit_project').click(function(event){
@@ -89,6 +90,36 @@ var crono = {
         else {
             window.location.replace("login.html");  
         }    
+    },
+    
+    populateCustomers: function(chosen_element) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/customers/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $(chosen_element).find('option').remove();
+                        $(chosen_element).append('<option>No Customer</option>');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            $(chosen_element).append($('<option>', {
+                                value: json_response[i].id,
+                                text: json_response[i].customer_name
+                            }));
+                        }
+                        $(chosen_element).val('').trigger("chosen:updated"); 
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
     },
     
     populateProjects: function() {
@@ -110,9 +141,7 @@ var crono = {
                                 text: json_response[i].name
                             }));
                         }
-                        $(".chosen-select option[selected]").removeAttr("selected");
-                        $(".chosen-select").val('').trigger("chosen:updated"); 
-                        $(".chosen-select option[selected]").removeAttr("selected");
+                        $('#project_list').val('').trigger("chosen:updated");
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -197,9 +226,9 @@ var crono = {
                 }).done(function( json_response ) {
                     if(json_response.status) {
                         $('#edit_project_name').val(json_response.project.name);
-                        console.log(json_response.project.status);
+                        //console.log(json_response.project.status);
                         $('#edit_project_status').val(json_response.project.status).trigger('chosen:updated');
-                        $('#new_project_customer_list').val(json_response.project.customer_id).trigger('chosen:updated');
+                        $('#edit_project_customer_list').val(json_response.project.customer_id).trigger('chosen:updated');
                     } else {
                         //TODO Error handler
                         console.log('Error during deleting project');

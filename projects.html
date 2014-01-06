@@ -33,6 +33,7 @@
                         event.preventDefault();
                         $('#new_project_customer_list').chosen({allow_single_deselect: true});
                         $('#new_project_status').chosen({disable_search_threshold: 3});
+                        crono.populateCustomers('#new_project_customer_list');
                         $('#btn_save_new_project').click(function(event) {
                             event.preventDefault();
                             crono.addProject(false);

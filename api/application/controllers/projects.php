@@ -22,6 +22,7 @@ class Projects extends REST_Controller {
             $p->id = $project->id;
             $p->name = $project->name;
             $p->customer_name = $project->Customer->get()->customer_name;
+            $p->customer_id = $project->customer_id;
             if(!$p->customer_name) $p->customer_name='-';
             $p->status = ($project->closed) ? 1 : 0;
             $p->gitlab_project_id = $project->gitlab_project_id;
