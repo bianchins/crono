@@ -55,6 +55,7 @@
                    
                 });
                 crono.populateProjects();
+                crono.populateLastTimerEntries(1);
                 $('#btn-start-stop').click(function(event){
                    event.preventDefault();
                    //TODO if a task is active, pick the start time and run flag from this (ajax call)
@@ -164,16 +165,11 @@
                 <div class="col-md-7">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title">Last entries</h3>
+                            <h3 class="panel-title">Last entries <a href="#" class="pull-right"><small>Show all</small></a></h3>
                         </div>
                         <div class="panel-body">
-                          <div class="list-group">
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            <a href="#" class="list-group-item">Entry example<span class="pull-right">00:00:00</span></a>
-                            
+                          <div class="list-group" id="last_timer_entries">
+                            <a href="#" class="list-group-item">No entry yet</a>
                           </div>
                         </div>
                   </div>

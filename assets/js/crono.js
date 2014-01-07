@@ -176,6 +176,31 @@ var crono = {
         }
     },
     
+    populateLastTimerEntries: function(only_current_user) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/timer/all/'+only_current_user+'/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $('#last_timer_entries').html($(''));
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            $('#last_timer_entries').append('<a href="#" class="list-group-item">'+json_response[i].task+'<b><span class="pull-right">'+json_response[i].duration+'</span></b></a>')
+                        }
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
     populateProjects: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
