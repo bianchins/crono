@@ -46,9 +46,9 @@ class Timer_entry extends DataMapper {
 	// --------------------------------------------------------------------
 
 	var $validation = array(
-		'customer_name' => array(
-			'rules' => array('required', 'max_length' => 150),
-			'label' => 'Customer Name'
+		'start_time' => array(
+			'rules' => array('required'),
+			'label' => 'Start Time'
 		),
 	);
 

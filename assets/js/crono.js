@@ -231,6 +231,40 @@ var crono = {
         }
     },
     
+    startTimer: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "POST",
+                url: '/crono/api/index.php/timer/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    task: $('#task').val(),
+                    project_id: $('#project_list').val()
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                       crono.timer.start = new Date();
+                       crono.timer.timerID = setInterval(crono.timer.tick, 10);
+                       crono.timer.run = true;
+                       $('#btn-start-stop').html('<span class="fa fa-stop"></span> Stop');
+                       $('#btn-start-stop').removeClass('btn-success');
+                       $('#btn-start-stop').addClass('btn-danger');
+                       $('#navbar_timer').removeClass('hide');
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
     addCustomer: function(from_project) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');

@@ -4,7 +4,35 @@ class Timer extends REST_Controller {
     
     public function index_post()
     {
-        
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->post('token'))->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $timer_entry = new Timer_entry();
+            $timer_entry->task=$this->post('task');
+            $timer_entry->start_time = time();
+            $timer_entry->stop_time = 0;
+            $timer_entry->project_id = $this->post('project_id');
+            $timer_entry->user_id = $token_entry->user_id;
+            $timer_entry->active=1;
+            if($timer_entry->save())
+            {
+                $response->status=true;
+                $response->last_inserted_id = $timer_entry->id;
+            }
+            else 
+            {
+                $response->status=false;
+                $response->error='Timer not started!';
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
     }
     
     public function active_get($token)

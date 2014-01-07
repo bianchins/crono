@@ -71,13 +71,7 @@
                        $("#home_timer").text("00:00:00");
                    }
                    else {
-                       crono.timer.start = new Date();
-                       crono.timer.timerID = setInterval(crono.timer.tick, 10);
-                       crono.timer.run = true;
-                       $(this).html('<span class="fa fa-stop"></span> Stop');
-                       $(this).removeClass('btn-success');
-                       $(this).addClass('btn-danger');
-                       $('#navbar_timer').removeClass('hide');
+                       crono.startTimer();
                        //Ajax startinh timer
                    }
                 });
