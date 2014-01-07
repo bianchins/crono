@@ -20,7 +20,7 @@ class Project extends DataMapper {
 	var $has_one = array('customer');
 
 	// Insert related models that Template can have more than one of.
-	var $has_many = array();
+	var $has_many = array('timer_entry');
 
 	/* Relationship Examples
 	 * For normal relationships, simply add the model name to the array:

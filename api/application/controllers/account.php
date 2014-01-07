@@ -15,8 +15,7 @@ class Account extends REST_Controller {
             $token_entry->get_by_valid_token($token)->get();
             if($token_entry->exists())
             {
-                $user = new User();
-                $user->get_by_id($token_entry->user_id);
+                $user = $token_entry->user->get();
                 $response->status = true;
                 $response->user = new stdClass();
                 $response->user->firstname = $user->firstname;
@@ -47,8 +46,7 @@ class Account extends REST_Controller {
             //Token found, session is ok
             if($token_entry->exists())
             {
-                $user = new User();
-                $user->get_by_id($token_entry->user_id);
+                $user = $token_entry->user->get();
                 $response->status=true;
                 $response->is_admin = ($user->is_admin) ? TRUE : FALSE;
                 $response->firstname = $user->firstname;

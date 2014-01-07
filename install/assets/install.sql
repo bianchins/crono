@@ -28,12 +28,14 @@ CREATE TABLE IF NOT EXISTS `settings` (
 --
 
 CREATE TABLE IF NOT EXISTS `tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(200) NOT NULL,
   `token_expire` int(11) NOT NULL,
   `client_secret_uuid` varchar(36) NOT NULL,
   `user_id` int(11) NOT NULL,
-  PRIMARY KEY (`token`,`client_secret_uuid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tokens table (Auth for API)';
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`,`client_secret_uuid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Tokens table (Auth for API)' AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE IF NOT EXISTS `customers` (
@@ -41,7 +43,6 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_name` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
 
 
 CREATE TABLE IF NOT EXISTS `timer_entries` (
@@ -53,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `timer_entries` (
   `stop_time` int(11) NOT NULL DEFAULT '0',
   `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Struttura della tabella `users`

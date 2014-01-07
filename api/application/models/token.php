@@ -17,7 +17,7 @@ class Token extends DataMapper {
 	// --------------------------------------------------------------------
 
 	// Insert related models that Template can have just one of.
-	var $has_one = array();
+	var $has_one = array('user');
 
 	// Insert related models that Template can have more than one of.
 	var $has_many = array();
