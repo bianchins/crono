@@ -249,10 +249,50 @@ var crono = {
                        crono.timer.start = new Date();
                        crono.timer.timerID = setInterval(crono.timer.tick, 10);
                        crono.timer.run = true;
+                       crono.timer.activeId = json_response.last_inserted_id;
                        $('#btn-start-stop').html('<span class="fa fa-stop"></span> Stop');
                        $('#btn-start-stop').removeClass('btn-success');
                        $('#btn-start-stop').addClass('btn-danger');
                        $('#navbar_timer').removeClass('hide');
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    stopTimer: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "PUT",
+                url: '/crono/api/index.php/timer/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    task: $('#task').val(),
+                    project_id: $('#project_list').val(),
+                    id: crono.timer.activeId
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                       clearTimeout(crono.timer.timerID);
+                       crono.timer.run = false;
+                       $('#btn-start-stop').html('<span class="fa fa-play"></span> Start');
+                       $('#btn-start-stop').removeClass('btn-danger');
+                       $('#btn-start-stop').addClass('btn-success');
+                       $('#navbar_timer').addClass('hide');
+                       $(".chosen-select").val('').trigger('chosen:updated');
+                       crono.timer.activeId = null;
+                       $("#home_timer").text("00:00:00");
+                       $('#task').val('');
+                       crono.populateLastTimerEntries(1);
                     } else {
                         //Error handler
                     }
@@ -565,6 +605,7 @@ var crono = {
         diff : 0,
         timerID : 0,
         run: false,
+        activeId: null,
         tick: function() {
             crono.timer.end = new Date();
             crono.timer.diff = crono.timer.end - crono.timer.start;

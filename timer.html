@@ -60,15 +60,7 @@
                    event.preventDefault();
                    //TODO if a task is active, pick the start time and run flag from this (ajax call)
                    if(crono.timer.run) {
-                       clearTimeout(crono.timer.timerID);
-                       crono.timer.run = false;
-                       $(this).html('<span class="fa fa-play"></span> Start');
-                       $(this).removeClass('btn-danger');
-                       $(this).addClass('btn-success');
-                       $('#navbar_timer').addClass('hide');
-                       $(".chosen-select").val('').trigger('chosen:updated');
-                       //Ajax stopping timer
-                       $("#home_timer").text("00:00:00");
+                       crono.stopTimer();
                    }
                    else {
                        crono.startTimer();
