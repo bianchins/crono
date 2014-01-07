@@ -49,9 +49,10 @@ class Timer extends REST_Controller {
             if($timer_entries->exists())
             {
                 $response->status = true;
-                $timer = stdClass();
+                $timer = new stdClass();
                 $timer->id = $timer_entries->id;
                 $timer->task = $timer_entries->task;
+                $timer->start_time = $timer_entries->start_time;
                 $response->active_timer = $timer;
             }
             else 
@@ -64,8 +65,8 @@ class Timer extends REST_Controller {
         {
             $response->status=false;
             $response->error='Token not found or session expired';
-            $this->response($response);
-        } 
+        }
+        $this->response($response);
     }
     
     public function all_get($only_current_user, $token)

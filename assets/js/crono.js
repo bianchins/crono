@@ -189,7 +189,8 @@ var crono = {
                         $('#last_timer_entries').html($(''));
                         for(var i=0; i<json_response.length; i++)
                         {
-                            $('#last_timer_entries').append('<a href="#" class="list-group-item">'+json_response[i].task+'<b><span class="pull-right">'+json_response[i].duration+'</span></b></a>')
+                            json_response[i].task = (json_response[i].task) ? json_response[i].task : 'No task';
+                            $('#last_timer_entries').append('<a href="#" class="list-group-item">'+json_response[i].task+'&nbsp;<b><span class="pull-right">'+json_response[i].duration+'</span></b></a>')
                         }
                     }
              }).fail(function(jqXHR, textStatus) {
@@ -221,6 +222,37 @@ var crono = {
                             }));
                         }
                         $('#project_list').val('').trigger("chosen:updated");
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
+    loadActiveTimer: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/timer/active/'+$.sha1(token+uuid),
+                dataType: "json"
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                       crono.timer.activeId = json_response.active_timer.id;
+                       crono.timer.start = new Date(json_response.active_timer.start_time*1000);
+                       crono.timer.timerID = setInterval(crono.timer.tick, 10);
+                       crono.timer.run = true;
+                       $('#btn-start-stop').html('<span class="fa fa-stop"></span> Stop');
+                       $('#btn-start-stop').removeClass('btn-success');
+                       $('#btn-start-stop').addClass('btn-danger');
+                       $('#navbar_timer').removeClass('hide');
+                       $('#task').val(json_response.timer.task);
+                    } else {
+                        //Error handler
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -618,7 +650,9 @@ var crono = {
             hr = (hr < 10) ? "0" + hr : hr;
             $("#home_timer").text(hr+":"+min+":"+sec);
             $("#project-timer").text(hr+":"+min+":"+sec);
-            $('#project-timer-name').text($('#task').val());
+            var project_name = $("#project_list option:selected").text();
+            project_name = !project_name ? 'No project' : project_name;
+            $('#project-timer-name').text(project_name);
             
         }
     },
@@ -684,4 +718,5 @@ $( document ).ready(function() {
        }); 
        
     });
+    crono.loadActiveTimer();
 });
