@@ -196,7 +196,8 @@ var crono = {
                         for(var i=0; i<json_response.length; i++)
                         {
                             json_response[i].task = (json_response[i].task) ? json_response[i].task : 'No task';
-                            $('#last_timer_entries').append('<a href="#" class="list-group-item">'+json_response[i].task+'&nbsp;<b><span class="pull-right">'+json_response[i].duration+'</span></b></a>')
+                            var date = new Date(json_response[i].stop_time*1000);
+                            $('#last_timer_entries').append('<a href="#" class="list-group-item">'+date.toLocaleDateString()+' - '+json_response[i].task+'&nbsp;<b><span class="pull-right">'+json_response[i].duration+'</span></b></a>')
                         }
                     }
              }).fail(function(jqXHR, textStatus) {
