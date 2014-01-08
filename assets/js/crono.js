@@ -747,5 +747,6 @@ $( document ).ready(function() {
        }); 
        
     });
+    $("[data-toggle=tooltip]").tooltip();
     crono.loadActiveTimer();
 });
