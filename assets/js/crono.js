@@ -27,15 +27,21 @@ var crono = {
                            });
                         }
                     } else {
-                        window.location.replace("login.html");
+                        crono.redirectToLogin();
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
-                    window.location.replace("login.html");
+                    crono.redirectToLogin();
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();
+        }
+    },
+    
+    redirectToLogin: function() {
+        if(window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1)!='login.html') {
+            window.location.replace("login.html");
         }
     },
     
@@ -86,7 +92,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }    
     },
     
@@ -141,7 +147,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }    
     },
     
@@ -172,7 +178,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();
         }
     },
     
@@ -198,7 +204,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();  
         }
     },
     
@@ -228,7 +234,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();  
         }
     },
     
@@ -251,7 +257,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -282,7 +288,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -317,7 +323,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();
         }
     },
     
@@ -356,7 +362,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();  
         }
     },
     
@@ -389,7 +395,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -414,7 +420,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();
         }
     },
     
@@ -443,7 +449,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -467,7 +473,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -498,7 +504,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -529,7 +535,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -557,7 +563,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         }
     },
     
@@ -581,7 +587,7 @@ var crono = {
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin();
         }
     },
     
@@ -600,17 +606,17 @@ var crono = {
                     if(json_response.status) {
                         $.removeCookie('token'); 
                         $.removeCookie('client_secret_uuid');
-                        window.location.replace("login.html");
+                        crono.redirectToLogin();
                     } else {
-                        window.location.replace("login.html");
+                        crono.redirectToLogin();
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
-                    window.location.replace("login.html");
+                    crono.redirectToLogin();
             }); 
         } 
         else {
-            window.location.replace("login.html");  
+            crono.redirectToLogin(); 
         } 
     },
     

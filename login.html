@@ -27,7 +27,7 @@
                     e.preventDefault();
                 });
                 //TODO ajax API call to check session
-                //crono.check_session();
+                crono.check_session(true);
             });
         </script>  
     <div class="container">
@@ -37,11 +37,11 @@
                 <div class="account-wall">
                     <div class="login-logo">Cr<i class="fa fa-clock-o"></i>no</div>
                     <form class="form-signin">
-                    <input type="text" class="form-control" placeholder="Email" required autofocus id="username">
+                    <input type="text" class="form-control" placeholder="Username" required autofocus id="username">
                     <input type="password" class="form-control" placeholder="Password" required id="password">
                     <button class="btn btn-lg btn-primary btn-block" id="btn-login" type="button">Sign in</button>
                     <label class="checkbox pull-left">
-                        <input type="checkbox" value="remember-me">
+                        <input type="checkbox" id="remember_me"/>
                         Remember me
                     </label>
                     <span class="clearfix"></span>
