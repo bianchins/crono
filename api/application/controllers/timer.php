@@ -135,5 +135,33 @@ class Timer extends REST_Controller {
     {
         
     }
+    
+    public function weekTotal_get($token)
+    {
+        //YEARWEEK(FROM_UNIXTIME(stop_time)) = YEARWEEK(CURRENT_DATE)
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if(true)//if($token_entry->exists())
+        {
+            //TODO
+            $timer_entries = new Timer_entry();
+            //Selecting the entry
+            $timer_entries->getThisWeek()->where('active',0)->select_sum('(stop_time - start_time)','totalTime')->get();
+            $response->status = true;
+            $response->totalThisWeek = 0;
+            if($timer_entries->exists())
+            {
+                if(!$timer_entries->totalTime) return from_unix_timespan_to_string(0);
+                $response->totalThisWeek = from_unix_timespan_to_string($timer_entries->totalTime);
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
+    }
 }
 

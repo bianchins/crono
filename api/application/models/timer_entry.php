@@ -70,6 +70,11 @@ class Timer_entry extends DataMapper {
 		parent::__construct($id);
     }
 
+        public function getThisWeek()
+        {
+            return $this->where("YEARWEEK(FROM_UNIXTIME(stop_time)) = YEARWEEK(CURRENT_DATE)");
+        }
+    
 	// --------------------------------------------------------------------
 	// Post Model Initialisation
 	//   Add your own custom initialisation code to the Model

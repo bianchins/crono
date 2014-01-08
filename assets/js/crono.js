@@ -232,6 +232,29 @@ var crono = {
         }
     },
     
+    loadThisWeekTotal: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/timer/weekTotal/'+$.sha1(token+uuid),
+                dataType: "json"
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                       $('#thisWeekTotal').text(json_response.totalThisWeek);
+                    } else {
+                        //Error handler
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            window.location.replace("login.html");  
+        }
+    },
+    
     loadActiveTimer: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -241,7 +264,7 @@ var crono = {
                 url: '/crono/api/index.php/timer/active/'+$.sha1(token+uuid),
                 dataType: "json"
                 }).done(function( json_response ) {
-                    if(json_response.status) {
+                    if(json_response.status && json_response.active_timer) {
                        crono.timer.activeId = json_response.active_timer.id;
                        crono.timer.start = new Date(json_response.active_timer.start_time*1000);
                        crono.timer.timerID = setInterval(crono.timer.tick, 10);
