@@ -45,6 +45,57 @@ var crono = {
         }
     },
     
+    populateUsersTable: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/account/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $('#user-list-table tbody').html('');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            var row = $('<tr><td>'+json_response[i].username+'</td><td>'+json_response[i].firstname+'</td><td>'+json_response[i].lastname+'</td></tr>');
+                            var manage_col = $('<td></td>');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-warning btn-edit-user" data-id="'+json_response[i].id+'" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-user" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
+                            row.append(manage_col);
+                            $('#user-list-table tbody').append(row);
+                        }
+                        $('.btn-delete-user').click(function(event) {
+                            event.preventDefault();
+                            if(confirm('Are you sure to delete this user?')) {
+                               var id = $(this).attr('data-id');
+                               //crono.deleteCustomer(id);
+                            }
+                        });
+                        
+                        $('.btn-edit-user').click(function(event) {
+                           event.preventDefault();
+                           var id = $(this).attr('data-id');
+                           $('#modal_container').load('modal/edit_user.html', function() {
+                               $('#btn_save_edit_user').attr('data-id', id);
+                               //crono.readCustomer(id);
+                               $('#btn_save_edit_user').click(function(event){
+                                   event.preventDefault();
+                                   //crono.updateCustomer($(this).attr('data-id'));
+                               });
+                               $('#modal_edit_user').modal('show');
+                           });
+                        });
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin(); 
+        }    
+    },
+    
     populateCustomersTable: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');

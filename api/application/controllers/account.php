@@ -183,6 +183,30 @@ class Account extends REST_Controller {
             }
             $this->response($response);
 	}
+        
+        public function all_get($token)
+        {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
+        {
+            $response = [];
+            $users = new User();
+            $users->order_by('username','DESC')->get();
+            foreach($users as $user)
+            {
+                $u = new stdClass();
+                $u->id = $user->id;
+                $u->username = $user->username;
+                $u->firstname = $user->firstname;
+                $u->lastname = $user->lastname;
+                $u->is_admin = $user->is_admin;
+                array_push($response, $u);
+            }
+            $this->response($response);
+        }
+    }
+        
 }
 
 /* End of file account.php */

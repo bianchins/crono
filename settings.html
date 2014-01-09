@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Crono Time Tracker - Customers</title>
+        <title>Crono Time Tracker - System Settings</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -25,21 +25,12 @@
                    event.preventDefault();
                    crono.logout();
                 });
-                $(".chosen-select").chosen({allow_single_deselect: true});
+                $(".chosen-select").chosen({disable_search_threshold: 10});
                 
-                $('#btn-add-customer').click(function(event){
-                    
-                   $('#modal_container').load('modal/new_customer.html', function() {
-                        event.preventDefault();
-                        $('#btn_save_new_customer').click(function(event) {
-                            event.preventDefault();
-                            crono.addCustomer(false);
-                        });
-                        $('#modal_new_customer').modal('show');
-                   }); 
-                    
+                $('.btn-success').click(function() {
+                    alert('Sorry, Settings feature is not ready yet :-(');
                 });
-                crono.populateCustomersTable();
+                
                 crono.loadActiveTimer();
             });
         </script> 
@@ -56,7 +47,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="timer.html"><span class="fa fa-play"></span> Timer</a></li>
                         <li><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
-                        <li class="active"><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
+                        <li><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                             class="fa fa-bar-chart-o"></span> Reports <b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -95,22 +86,27 @@
             <div class="row">
                 <div class="col-md-12">
                     
-                    <h1><span class="fa fa-users"></span> Customers <button class="btn btn-default pull-right" id="btn-add-customer"><span class="fa fa-plus"></span> Add customer</button></h1>
-                    <div class="clearfix"></div>
-                    <table class="table table-striped" id="customer-list-table">
-                    <thead>
-                      <tr>
-                        <th>Customer's name</th>
-                        <th>Manage</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr id="row_no_projects">
-                          <td colspan="2">No customers yet</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                    
+                    <h1><span class="glyphicon glyphicon-cog"></span> Settings</h1>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                            <label style="display:block;">Frontend language</label>
+                            <select class="chosen-select form-control">
+                                <option value="english">English</option>
+                                <option value="italian" disabled="">Italian</option>
+                            </select>
+                            </div>
+                            <div class="form-group">
+                            <label style="display:block;">Frontend navbar theme</label>
+                            <select class="chosen-select form-control">
+                                <option value="default">Clear theme</option>
+                                <option value="inverse">Dark theme</option>
+                            </select>
+                            </div>
+                            <button class="btn btn-block btn-success"><span class="fa fa-floppy-o"></span> Save</button>
+                        </div>
+                    </div>
                     
                 </div>
             </div>
