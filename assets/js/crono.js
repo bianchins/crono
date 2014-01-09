@@ -197,8 +197,9 @@ var crono = {
                         {
                             json_response[i].task = (json_response[i].task) ? json_response[i].task : 'No task';
                             var date = new Date(json_response[i].stop_time*1000);
-                            $('#last_timer_entries').append('<a href="#" class="list-group-item">'+date.toLocaleDateString()+' - '+json_response[i].task+'&nbsp;<b><span class="pull-right">'+json_response[i].duration+'</span></b></a>')
+                            $('#last_timer_entries').append('<li class="list-group-item"><a href="#" class="pull-right" style="padding-left:5px;font-size:14px;" data-toggle="tooltip-entry" title="Project: '+json_response[i].project_name+'"><span class="fa fa-info-circle"></span></a> '+date.toLocaleDateString()+' - '+json_response[i].task+'<b><span class="pull-right">'+json_response[i].duration+'</span></b></li>');
                         }
+                        $("[data-toggle=tooltip-entry]").tooltip({placement: 'auto'});
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -229,6 +230,7 @@ var crono = {
                             }));
                         }
                         $('#project_list').val('').trigger("chosen:updated");
+                        crono.loadActiveTimer();
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -265,6 +267,7 @@ var crono = {
     loadActiveTimer: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
+        $(".chosen-select").chosen({allow_single_deselect: true});
         if(token && uuid) {
             $.ajax({
                 type: "GET",
@@ -276,11 +279,14 @@ var crono = {
                        crono.timer.start = new Date(json_response.active_timer.start_time*1000);
                        crono.timer.timerID = setInterval(crono.timer.tick, 10);
                        crono.timer.run = true;
+                       crono.timer.activeProjectId = json_response.active_timer.project_id;
                        $('#btn-start-stop').html('<span class="fa fa-stop"></span> Stop');
                        $('#btn-start-stop').removeClass('btn-success');
                        $('#btn-start-stop').addClass('btn-danger');
                        $('#navbar_timer').removeClass('hide');
-                       $('#task').val(json_response.timer.task);
+                       $('#task').val(json_response.active_timer.task);
+                       $('#project_list').val(json_response.active_timer.project_id).trigger("chosen:updated");
+                       crono.timer.activeProjectName = (json_response.active_timer.project_name!=null) ? json_response.active_timer.project_name : 'No project';
                     } else {
                         //Error handler
                     }
@@ -328,6 +334,36 @@ var crono = {
         }
     },
     
+    updateActiveTimer: function() {
+        if(crono.timer.activeId!=null) {
+            token = $.cookie('token');
+            uuid = $.cookie('client_secret_uuid');
+            if(token && uuid) {
+                $.ajax({
+                    type: "PUT",
+                    url: '/crono/api/index.php/timer/',
+                    dataType: "json",
+                    data: {
+                        token: $.sha1(token+uuid),
+                        task: $('#task').val(),
+                        active: 1,
+                        project_id: $('#project_list').val(),
+                        id: crono.timer.activeId
+                    }
+                    }).done(function( json_response ) {
+                        if(!json_response.status) {
+                           //Error handler
+                        }
+                 }).fail(function(jqXHR, textStatus) {
+                        console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+                }); 
+            } 
+            else {
+                crono.redirectToLogin();  
+            }
+        }
+    },
+    
     stopTimer: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -339,7 +375,8 @@ var crono = {
                 data: {
                     token: $.sha1(token+uuid),
                     task: $('#task').val(),
-                    project_id: $('#project_list').val(),
+                    active: 0,
+                    project_id: crono.timer.activeProjectId,
                     id: crono.timer.activeId
                 }
                 }).done(function( json_response ) {
@@ -668,6 +705,9 @@ var crono = {
         timerID : 0,
         run: false,
         activeId: null,
+        activeProjectName : 'No project',
+        activeProjectId : 0,
+        activeTask : '',
         tick: function() {
             crono.timer.end = new Date();
             crono.timer.diff = crono.timer.end - crono.timer.start;
@@ -681,7 +721,7 @@ var crono = {
             $("#home_timer").text(hr+":"+min+":"+sec);
             $("#project-timer").text(hr+":"+min+":"+sec);
             var project_name = $("#project_list option:selected").text();
-            project_name = !project_name ? 'No project' : project_name;
+            project_name = !project_name ? crono.timer.activeProjectName : project_name;
             $('#project-timer-name').text(project_name);
             
         }
@@ -749,5 +789,10 @@ $( document ).ready(function() {
        
     });
     $("[data-toggle=tooltip]").tooltip();
-    crono.loadActiveTimer();
+    
+    
+    $('#navbar_stop_timer').click(function(event) {
+       event.preventDefault();
+       crono.stopTimer();
+    });
 });

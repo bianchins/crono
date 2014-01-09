@@ -25,7 +25,7 @@
                    event.preventDefault();
                    crono.logout();
                 });
-                $(".chosen-select").chosen({allow_single_deselect: true});
+                
                 $('#btn-add-project').click(function(event){
                     
                    $('#modal_container').load('modal/new_project.html', function() {
@@ -57,9 +57,19 @@
                 crono.populateProjects();
                 crono.populateLastTimerEntries(1);
                 crono.loadThisWeekTotal();
+                
+                $('#task').focusout(function() {
+                    crono.updateActiveTimer();
+                });
+                $('#project_list').change(function() {
+                    var projectName = $("#project_list option:selected").text();
+                    crono.timer.activeProjectName = (!projectName) ? 'No project' : projectName;
+                    crono.timer.activeProjectId = $("#project_list").val();
+                    crono.updateActiveTimer();
+                });
+                
                 $('#btn-start-stop').click(function(event){
                    event.preventDefault();
-                   //TODO if a task is active, pick the start time and run flag from this (ajax call)
                    if(crono.timer.run) {
                        crono.stopTimer();
                    }
@@ -98,7 +108,7 @@
                         <li style="font-size:20px; line-height:12px;"><p class="navbar-text hide" id="navbar_timer">
                                 <small><span id="project-timer-name">No task / No project</span></small>
                                 <span id="project-timer">00:00</span> 
-                                <a href="#" class="navbar-link" style="padding-left:5px; padding-right:10px;"><span class="fa fa-pause"></span></a>
+                                <a href="#" class="navbar-link" style="padding-left:5px; padding-right:10px;" id="navbar_stop_timer" data-toggle="tooltip" title="Stop timer"><span class="fa fa-stop"></span></a>
                             </p></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                                     class="fa fa-user"></span> <span id="navbar_user_firstname">Admin</span> <b class="caret"></b></a>
@@ -155,9 +165,9 @@
                             <h3 class="panel-title">Last entries <a href="timer_entries.html" class="pull-right" title="Show all time entries"><small>Show all</small></a></h3>
                         </div>
                         <div class="panel-body">
-                          <div class="list-group" id="last_timer_entries">
-                            <a href="#" class="list-group-item">No entry yet</a>
-                          </div>
+                          <ul class="list-group" id="last_timer_entries">
+                            <li class="list-group-item">No entry yet</li>
+                          </ul>
                         </div>
                   </div>
                 </div>

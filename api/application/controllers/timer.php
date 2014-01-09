@@ -53,6 +53,8 @@ class Timer extends REST_Controller {
                 $timer->id = $timer_entries->id;
                 $timer->task = $timer_entries->task;
                 $timer->start_time = $timer_entries->start_time;
+                $timer->project_id = $timer_entries->project_id;
+                $timer->project_name = $timer_entries->project->get()->name;
                 $response->active_timer = $timer;
             }
             else 
@@ -112,7 +114,7 @@ class Timer extends REST_Controller {
             if($timer_entry->exists()) 
             {
                 $timer_entry->stop_time = time();
-                $timer_entry->active = 0;
+                $timer_entry->active = $this->put('active');
                 $timer_entry->task=$this->put('task');
                 $timer_entry->project_id = $this->put('project_id');
                 $timer_entry->save();
