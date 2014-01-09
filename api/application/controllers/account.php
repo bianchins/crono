@@ -206,6 +206,36 @@ class Account extends REST_Controller {
             $this->response($response);
         }
     }
+    
+    public function user_delete($id, $token)
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
+        {
+            if($token_entry->user_id!=id)
+            {
+            $user = new User();
+            $user->get_by_id($id);
+            $user->delete();
+            $response->status=TRUE;
+            $this->response($response);
+            }
+            else 
+            {
+                $response->status=FALSE;
+                $response->error='Cannot delete active user!';
+                $this->response($response);
+            }
+        }
+        else 
+        {
+            $response->status=FALSE;
+            $response->error='Token not found or session expired';
+            $this->response($response);
+        } 
+    }
         
 }
 
