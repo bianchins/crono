@@ -280,6 +280,7 @@ var crono = {
                        crono.timer.timerID = setInterval(crono.timer.tick, 10);
                        crono.timer.run = true;
                        crono.timer.activeProjectId = json_response.active_timer.project_id;
+                       crono.timer.activeTask = json_response.active_timer.task;
                        $('#btn-start-stop').html('<span class="fa fa-stop"></span> Stop');
                        $('#btn-start-stop').removeClass('btn-success');
                        $('#btn-start-stop').addClass('btn-danger');
@@ -345,7 +346,7 @@ var crono = {
                     dataType: "json",
                     data: {
                         token: $.sha1(token+uuid),
-                        task: $('#task').val(),
+                        task: crono.timer.activeTask,
                         active: 1,
                         project_id: $('#project_list').val(),
                         id: crono.timer.activeId
@@ -374,7 +375,7 @@ var crono = {
                 dataType: "json",
                 data: {
                     token: $.sha1(token+uuid),
-                    task: $('#task').val(),
+                    task: crono.timer.activeTask,
                     active: 0,
                     project_id: crono.timer.activeProjectId,
                     id: crono.timer.activeId

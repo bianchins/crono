@@ -59,6 +59,7 @@
                 crono.loadThisWeekTotal();
                 
                 $('#task').focusout(function() {
+                    crono.timer.activeTask = $('#task').val();
                     crono.updateActiveTimer();
                 });
                 $('#project_list').change(function() {
