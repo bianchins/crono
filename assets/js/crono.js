@@ -240,7 +240,7 @@ var crono = {
         if(token && uuid) {
             $.ajax({
                 type: "GET",
-                url: '/crono/api/index.php/timer/all/'+only_current_user+'/'+$.sha1(token+uuid),
+                url: '/crono/api/index.php/timer/last/'+$.sha1(token+uuid),
                 dataType: "json" 
                 }).done(function( json_response ) {
                     if(!json_response.error) {
