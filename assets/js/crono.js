@@ -659,6 +659,39 @@ var crono = {
         }
     },
     
+    addUser: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "POST",
+                url: '/crono/api/index.php/user/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    id: id,
+                    username: $('#new-user-username').val(),
+                    firstname: $('#new-user-firstname').val(),
+                    lastname: $('#new-user-lastname').val(),
+                    password: $('#new-user-password').val()
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateUsersTable();
+                        $('#modal_new_user').modal('hide');
+                    } else {
+                        //Error handler
+                        console.log(json_response.error);
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin(); 
+        }
+    },
+    
     updateUser: function(id) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
