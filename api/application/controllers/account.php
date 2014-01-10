@@ -207,6 +207,68 @@ class Account extends REST_Controller {
         }
     }
     
+    public function user_put()
+    {
+        $response = new stdClass();
+
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->put('token'))->get();
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
+        {
+            $user = new User();
+            $user->get_by_id($this->put('id'));
+            $user->firstname = $this->put('firstname');
+            $user->lastname = $this->put('lastname');
+            $user->username = $this->put('username');
+            //Check if password has been changed
+            if($this->put('new_password')) 
+            {
+               $user->password = sha1($this->put('new_password'));
+            }
+            //Try to save on db
+            if($user->save()) 
+            {
+                $response->status=true;
+            }
+            else
+            {
+                $response->status=false;
+                $response->error='User not updated';
+            }
+        }
+        else 
+        {
+           $response->status=false;
+           $response->error='Token not found, not an admin or session expired.';
+        }
+        $this->response($response);
+    }
+        
+    public function user_get($id,$token)
+    {
+        $response = new stdClass();
+
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
+        {
+            $user = new User();
+            $user->get_by_id($id);
+            $response->status = true;
+            $response->user = new stdClass();
+            $response->user->firstname = $user->firstname;
+            $response->user->lastname = $user->lastname;
+            $response->user->username = $user->username;
+            $response->user->gitlab_private_key = $user->gitlab_private_key;
+        }
+        else
+        {
+            $response->status = false;
+            $response->error = 'Token not found, not an admin or session expired';
+        }
+        $this->response($response);
+    }
+        
     public function user_delete($id, $token)
     {
         $token_entry = new Token();
@@ -232,7 +294,7 @@ class Account extends REST_Controller {
         else 
         {
             $response->status=FALSE;
-            $response->error='Token not found or session expired';
+            $response->error='Token not found, not an admin or session expired';
             $this->response($response);
         } 
     }

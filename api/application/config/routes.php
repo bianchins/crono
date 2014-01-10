@@ -52,6 +52,8 @@ $route['customer/(:num)/(:any)'] = "customers/customer/$1/$2";
 //Route for DELETE and GET
 //for example GET accounts/1/token
 $route['user/(:num)/(:any)'] = "account/user/$1/$2";
+//Route for POST and PUT
+$route['user'] = "account/user";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

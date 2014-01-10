@@ -78,10 +78,10 @@ var crono = {
                            var id = $(this).attr('data-id');
                            $('#modal_container').load('modal/edit_user.html', function() {
                                $('#btn_save_edit_user').attr('data-id', id);
-                               //crono.readCustomer(id);
+                               crono.readUser(id);
                                $('#btn_save_edit_user').click(function(event){
                                    event.preventDefault();
-                                   //crono.updateCustomer($(this).attr('data-id'));
+                                   crono.updateUser($(this).attr('data-id'));
                                });
                                $('#modal_edit_user').modal('show');
                            });
@@ -657,6 +657,57 @@ var crono = {
         else {
             crono.redirectToLogin(); 
         }
+    },
+    
+    updateUser: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "PUT",
+                url: '/crono/api/index.php/user/',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    id: id,
+                    username: $('#edit-user-username').val(),
+                    firstname: $('#edit-user-firstname').val(),
+                    lastname: $('#edit-user-lastname').val(),
+                    new_password: $('#edit-user-new-password').val()
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateUsersTable();
+                        $('#modal_edit_user').modal('hide');
+                    } else {
+                        //Error handler
+                        console.log(json_response.error);
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin(); 
+        }
+    },
+    
+    readUser: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/user/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json"
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        $('#edit-user-firstname').val(json_response.user.firstname);
+                        $('#edit-user-lastname').val(json_response.user.lastname);
+                        $('#edit-user-username').val(json_response.user.username);
+                    }
+                });
+         }
     },
     
     deleteUser: function(id) {
