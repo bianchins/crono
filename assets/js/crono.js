@@ -950,7 +950,7 @@ $( document ).ready(function() {
        }); 
        
     });
-    $("[data-toggle=tooltip]").tooltip();
+    $("[data-toggle=tooltip]").tooltip({placement: 'auto'});
     
     
     $('#navbar_stop_timer').click(function(event) {
