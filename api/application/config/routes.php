@@ -49,5 +49,9 @@ $route['project/(:num)/(:any)'] = "projects/project/$1/$2";
 //for example GET customer/1/token
 $route['customer/(:num)/(:any)'] = "customers/customer/$1/$2";
 
+//Route for DELETE and GET
+//for example GET accounts/1/token
+$route['user/(:num)/(:any)'] = "account/user/$1/$2";
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

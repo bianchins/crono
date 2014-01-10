@@ -69,7 +69,7 @@ var crono = {
                             event.preventDefault();
                             if(confirm('Are you sure to delete this user?')) {
                                var id = $(this).attr('data-id');
-                               //crono.deleteCustomer(id);
+                               crono.deleteUser(id);
                             }
                         });
                         
@@ -180,9 +180,9 @@ var crono = {
                            event.preventDefault();
                            var id = $(this).attr('data-id');
                            $('#modal_container').load('modal/edit_project.html', function() {
-                               $('#edit_project_customer_list').chosen({allow_single_deselect:true});
+                               //$('#edit_project_customer_list').chosen({allow_single_deselect:true});
                                $('#edit_project_status').chosen({disable_search_threshold: 3});
-                               crono.populateCustomers('#edit_project_customer_list');
+                               
                                $('#btn_save_edit_project').attr('data-id', id);
                                crono.readProject(id);
                                $('#btn_save_edit_project').click(function(event){
@@ -221,6 +221,7 @@ var crono = {
                                 text: json_response[i].customer_name
                             }));
                         }
+                        $(chosen_element).chosen({allow_single_deselect: true});
                         if(choice!=null) $(chosen_element).val(choice).trigger("chosen:updated");
                         else $(chosen_element).val('').trigger("chosen:updated"); 
                     }
@@ -643,7 +644,8 @@ var crono = {
                         $('#edit_project_name').val(json_response.project.name);
                         //console.log(json_response.project.status);
                         $('#edit_project_status').val(json_response.project.status).trigger('chosen:updated');
-                        $('#edit_project_customer_list').val(json_response.project.customer_id).trigger('chosen:updated');
+                        crono.populateCustomers('#edit_project_customer_list', json_response.project.customer_id);
+                        //$('#edit_project_customer_list').val(json_response.project.customer_id).trigger('chosen:updated');
                     } else {
                         //TODO Error handler
                         console.log('Error during deleting project');
@@ -654,6 +656,30 @@ var crono = {
         } 
         else {
             crono.redirectToLogin(); 
+        }
+    },
+    
+    deleteUser: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "DELETE",
+                url: '/crono/api/index.php/user/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json",
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateUsersTable();
+                    } else {
+                        //TODO Error handler
+                        console.log('Error during deleting user: '+json_response.error);
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin();
         }
     },
     

@@ -214,7 +214,7 @@ class Account extends REST_Controller {
         $response = new stdClass();
         if($token_entry->exists() && $token_entry->user->get()->is_admin)
         {
-            if($token_entry->user_id!=id)
+            if($token_entry->user_id!=$id)
             {
             $user = new User();
             $user->get_by_id($id);
