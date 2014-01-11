@@ -10,10 +10,12 @@
         <script src="assets/js/jquery.cookie.js"></script>
         <script src="assets/js/sha1.js"></script>
         <script src="assets/js/chosen.jquery.js"></script>
+        <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
         <script src="assets/js/crono.js"></script>
         <!-- Latest compiled and minified JavaScript -->
         <script src="assets/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="assets/css/chosen.css">
+        <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
         <link rel="stylesheet" href="assets/css/font-awesome.min.css">
         <link href='http://fonts.googleapis.com/css?family=Maven+Pro' rel='stylesheet' type='text/css'>
     </head>
@@ -24,6 +26,15 @@
                 $('#btn-logout').click(function(event) {
                    event.preventDefault();
                    crono.logout();
+                });
+                
+                $('#btn-add-manual').click(function(event){
+                    $('#modal_container').load('modal/manual_entry.html', function() {
+                        $('#manual_entry_start_time').datetimepicker();
+                        $('#manual_entry_stop_time').datetimepicker();
+                        crono.populateProjects('#manual_entry_project_list');
+                        $('#modal_manual_entry').modal('show');
+                    });
                 });
                 
                 $('#btn-add-project').click(function(event){
@@ -54,7 +65,7 @@
                    }); 
                    
                 });
-                crono.populateProjects();
+                crono.populateProjects('#project_list');
                 crono.populateLastTimerEntries(1);
                 crono.loadThisWeekTotal();
                 

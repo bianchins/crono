@@ -262,7 +262,7 @@ var crono = {
         }
     },
     
-    populateProjects: function() {
+    populateProjects: function(chosen_element) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
         if(token && uuid) {
@@ -272,16 +272,16 @@ var crono = {
                 dataType: "json" 
                 }).done(function( json_response ) {
                     if(!json_response.error) {
-                        $('#project_list').find('option').remove();
-                        $('#project_list').append($('<option></option>'));
+                        $(chosen_element).find('option').remove();
+                        $(chosen_element).append($('<option></option>'));
                         for(var i=0; i<json_response.length; i++)
                         {
-                            $('#project_list').append($('<option>', {
+                            $(chosen_element).append($('<option>', {
                                 value: json_response[i].id,
                                 text: json_response[i].name
                             }));
                         }
-                        $('#project_list').val('').trigger("chosen:updated");
+                        $(chosen_element).val('').trigger("chosen:updated");
                         crono.loadActiveTimer();
                     }
              }).fail(function(jqXHR, textStatus) {

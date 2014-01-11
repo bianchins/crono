@@ -1,0 +1,55 @@
+<div class="modal fade" id="modal_manual_entry">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add manual entry</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="row">
+                      <div class="col-md-6">
+                        <label>Start time</label>
+                        <div class="form-group">
+                            <div class='input-group date' id='manual_entry_start_time'>
+                                <input type='text' class="form-control" data-format="yyyy-MM-dd"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>    
+                      </div>
+                      <div class="col-md-6">
+                          <label>Stop time</label>
+                          <div class="form-group">
+                          <div class='input-group date' id='manual_entry_stop_time'>
+                            <input type='text' class="form-control" data-format="yyyy-MM-dd"/>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                          </div>    
+                      </div>
+                  </div> 
+                  </div>
+                  <div class="row">
+                      <div class="col-md-6">
+                          <label style="width:100%; display:block;">Project</label>
+                            <select id="manual_entry_project_list" class="form-control chosen-select" style="width:280px;" data-placeholder="Select a project">
+                            </select>     
+                      </div>
+                      <div class="col-md-6">
+                        <label>Duration</label>
+                        <input type="text" id="manual_entry_duration" class="form-control" value="00:00:00" readonly/>    
+                      </div>
+                  </div>   
+                  <div class="row">
+                      <div class="col-md-12">
+                          <label>Task</label>
+                          <input type="text" id="manual_entry_task" class="form-control" placeholder="What did you work about?"/>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btn_save_new_user"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
