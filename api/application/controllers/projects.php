@@ -49,7 +49,7 @@ class Projects extends REST_Controller {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
         $response = new stdClass();
-        if($token_entry->exists())
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
         {
             $projects = new Project();
             $projects->get_by_id($id);
@@ -60,7 +60,7 @@ class Projects extends REST_Controller {
         else 
         {
             $response->status=FALSE;
-            $response->error='Token not found or session expired';
+            $response->error='Token not found, not an admin or session expired';
             $this->response($response);
         } 
     }
@@ -111,7 +111,7 @@ class Projects extends REST_Controller {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($this->put('token'))->get();
         $response = new stdClass();
-        if($token_entry->exists())
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
         {
             $project = new Project();
             $project->get_by_id($this->put('id'));
@@ -131,7 +131,7 @@ class Projects extends REST_Controller {
         else 
         {
             $response->status=false;
-            $response->error='Token not found or session expired';
+            $response->error='Token not found, not an admin or session expired';
         }
         $this->response($response);
     }
