@@ -43,6 +43,11 @@
                                 $('#manual_entry_duration').val(crono.getDurationString(start_date, stop_date));
                             });
                             
+                            $('#btn_save_manual_entry').click(function(event){
+                                event.preventDefault();
+                                crono.addManualEntry(); 
+                            });
+                            
                             $('#modal_manual_entry').modal('show');
                         });
                     }

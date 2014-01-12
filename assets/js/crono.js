@@ -352,6 +352,42 @@ var crono = {
         }
     },
     
+    addManualEntry: function() {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            if($('#manual_entry_start_time').val() && $('#manual_entry_stop_time').val()) {
+                $.ajax({
+                    type: "POST",
+                    url: '/crono/api/index.php/timer/manual',
+                    dataType: "json",
+                    data: {
+                        token: $.sha1(token+uuid),
+                        task: $('#manual_entry_task').val(),
+                        project_id: $('#manual_entry_project_list').val(),
+                        start_time: crono.fromStringToDateTime($('#manual_entry_start_time').val()).getTime()/1000,
+                        stop_time: crono.fromStringToDateTime($('#manual_entry_stop_time').val()).getTime()/1000
+                    }
+                    }).done(function( json_response ) {
+                        if(json_response.status) {
+                           crono.populateLastTimerEntries(1);
+                           $('#modal_manual_entry').modal('hide');
+                        } else {
+                            //Error handler
+                        }
+                 }).fail(function(jqXHR, textStatus) {
+                        console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+                });
+            }
+            else {
+                console.log('Start time and/or stop time not specified');
+            }
+        } 
+        else {
+            crono.redirectToLogin();
+        }
+    },
+    
     startTimer: function() {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
