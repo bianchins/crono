@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crono Time Tracker - Timer entries</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="assets/js/jquery.js"></script>
+        <script src="assets/js/jquery.cookie.js"></script>
+        <script src="assets/js/sha1.js"></script>
+        <script src="assets/js/chosen.jquery.js"></script>
+        <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="assets/js/crono.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="assets/css/chosen.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Maven+Pro' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <script>
+            $( document ).ready(function() {
+                crono.check_session(false);
+                $('#btn-logout').click(function(event) {
+                   event.preventDefault();
+                   crono.logout();
+                });
+                $('#from_date_div').datetimepicker({pickTime: false});
+                $('#to_date_div').datetimepicker({pickTime: false});
+                crono.loadActiveTimer();
+            });
+        </script> 
+            <nav class="navbar navbar-default navbar-static-top" role="navigation">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="timer.html" style="font-family: 'Maven Pro', sans-serif; font-size:20px;padding-bottom:6px;">Cr<i class="fa fa-clock-o"></i>no</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="timer.html"><span class="fa fa-play"></span> Timer</a></li>
+                        <li class="admin-only"><a href="projects.html"><span class="fa fa-tasks"></span> Projects</a></li>
+                        <li class="admin-only"><a href="customers.html"><span class="fa fa-users"></span> Customers</a></li>
+                        <li class="dropdown hide"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                            class="fa fa-bar-chart-o"></span> Reports <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="invoice.html"><span class="glyphicon glyphicon-euro"></span> Create invoice</a></li>
+                                <li class="divider"></li>
+                                <li><a href="stats.html"><span class="glyphicon glyphicon-stats"></span> Stats</a></li>
+                            </ul>
+                        </li>
+                        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="font-size:20px; line-height:12px;"><p class="navbar-text hide" id="navbar_timer">
+                                <small><span id="project-timer-name">No task / No project</span></small>
+                                <span id="project-timer">00:00</span> 
+                                <a href="#" class="navbar-link" style="padding-left:5px; padding-right:10px;" id="navbar_stop_timer" data-toggle="tooltip" title="Stop timer"><span class="fa fa-stop"></span></a>
+                            </p></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                    class="fa fa-user"></span> <span id="navbar_user_firstname">Admin</span> <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="admin-only hide"><a href="settings.html"><span class="glyphicon glyphicon-cog"></span> System Settings</a></li>
+                                <li class="admin-only"><a href="users.html"><span class="fa fa-users"></span> Manage Users</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" id="btn_edit_settings"><span class="glyphicon glyphicon-user"></span> Edit Account</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" id="btn-logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+        
+        
+        <div class="container">
+            
+            <div class="row">
+                <div class="col-md-12">
+                    
+                    <h1><span class="fa fa-clock-o"></span> Timer Entries </h1>
+                    <div class="clearfix"></div>
+                    <div class="row well well-sm">
+                        <div class="col-md-3">
+                            <label>From date</label>
+                            <div class="form-group">
+                                <div class='input-group date' id='from_date_div'>
+                                    <input type='text' class="form-control" data-format="yyyy-MM-dd" id='from_date'/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>   
+                        </div>
+                        <div class="col-md-3">
+                            <label>To date</label>
+                            <div class="form-group">
+                                <div class='input-group date' id='to_date_div'>
+                                    <input type='text' class="form-control" data-format="yyyy-MM-dd" id='to_date'/>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Project</label>
+                            <select class="chosen-select form-control"></select>
+                        </div>
+                        <div class="col-md-3 admin-only">
+                            <label>User</label>
+                            <select class="chosen-select form-control"></select>
+                        </div>
+                    </div>
+                    <table class="table table-striped" id="timer-list-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Task</th>
+                        <th>Project</th>
+                        <th>Duration</th>
+                        <th>Manage</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr id="row_no_projects">
+                          <td colspan="5">No entries yet</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                    
+                    
+                </div>
+            </div>
+            
+            
+        </div>
+
+        <!-- footer-->
+        <div style="width:100%" class="text-center">
+                <a href="http://github.com/bianchins/crono" class="text-center new-account" target="_blank">About <span style="font-family: 'Maven Pro', sans-serif;">Cr<i class="fa fa-clock-o"></i>no </span></a>
+        </div> 
+ 
+    </body>
+</html>
