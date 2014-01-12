@@ -107,7 +107,7 @@ class Customers extends REST_Controller {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($this->put('token'))->get();
         $response = new stdClass();
-        if($token_entry->exists())
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
         {
             $customer = new Customer();
             $customer->get_by_id($this->put('id'));
@@ -125,7 +125,7 @@ class Customers extends REST_Controller {
         else 
         {
             $response->status=false;
-            $response->error='Token not found or session expired';
+            $response->error='Token not found, not an admin or session expired';
         }
         $this->response($response);
     }
@@ -141,7 +141,7 @@ class Customers extends REST_Controller {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
         $response = new stdClass();
-        if($token_entry->exists())
+        if($token_entry->exists() && $token_entry->user->get()->is_admin)
         {
             $customer = new Customer();
             $customer->get_by_id($id);
@@ -152,7 +152,7 @@ class Customers extends REST_Controller {
         else 
         {
             $response->status=FALSE;
-            $response->error='Token not found or session expired';
+            $response->error='Token not found, not an admin or session expired';
             $this->response($response);
         } 
     }
