@@ -213,7 +213,7 @@ var crono = {
                 }).done(function( json_response ) {
                     if(!json_response.error) {
                         $(chosen_element).find('option').remove();
-                        $(chosen_element).append('<option>No Customer</option>');
+                        $(chosen_element).append('<option></option>');
                         for(var i=0; i<json_response.length; i++)
                         {
                             $(chosen_element).append($('<option>', {
@@ -931,6 +931,58 @@ var crono = {
                     }
                 });
          }
+    },
+    
+    fromStringToDateTime: function(dateTimeStr) {
+        result = new Date();
+        dateTimeArray = dateTimeStr.split(' ');
+        if(dateTimeArray.length != 2) return null;
+        dateArray=dateTimeArray[0].split('-');
+        timeArray=dateTimeArray[1].split(':');
+        if(dateArray.length != 3 || timeArray.length < 1 || timeArray.length > 3) {
+            return null;
+        }
+        result.setFullYear(dateArray[0],dateArray[1]-1,dateArray[2]);
+        if (timeArray[0].length > 2) {
+          result.setHours(timeArray[0].substring(0,2));
+          result.setMinutes(timeArray[0].substring(2,4));
+        }
+        else
+          result.setHours(timeArray[0]);
+        if(timeArray.length>1)
+            result.setMinutes(timeArray[1]);
+        else
+            result.setMinutes(0);
+        if(timeArray.length>2)
+            result.setSeconds(timeArray[2]);
+        else
+            result.setSeconds(0);
+        return result;
+    },
+    
+    getDurationString: function(start_datetime, stop_datetime) {
+        if(start_datetime==null || stop_datetime==null) {
+            return "00:00:00";
+        } else {
+            beginSecs = Math.floor(start_datetime.getTime() / 1000);
+            endSecs = Math.floor(stop_datetime.getTime() / 1000);
+            durationSecs = endSecs - beginSecs;
+            if(durationSecs<0) {
+                return "00:00:00";
+            } else {
+                secs = durationSecs%60;
+                if(secs<10)
+                    secs="0"+secs;
+                durationSecs = Math.floor(durationSecs/60);
+                mins = durationSecs%60;
+                if(mins<10)
+                    mins="0"+mins;
+                hours = Math.floor(durationSecs / 60);
+                if(hours<10)
+                    hours="0"+hours;
+                return hours+":"+mins+":"+secs;
+            }
+        }
     }
 };
 
