@@ -202,6 +202,38 @@ var crono = {
         }    
     },
     
+    populateUsers: function(chosen_element, choice) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/account/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(!json_response.error) {
+                        $(chosen_element).find('option').remove();
+                        $(chosen_element).append('<option></option>');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            $(chosen_element).append($('<option>', {
+                                value: json_response[i].id,
+                                text: json_response[i].username
+                            }));
+                        }
+                        $(chosen_element).chosen({allow_single_deselect: true});
+                        if(choice!=null) $(chosen_element).val(choice).trigger("chosen:updated");
+                        else $(chosen_element).val('').trigger("chosen:updated"); 
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin();
+        }
+    },
+    
     populateCustomers: function(chosen_element, choice) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -231,6 +263,51 @@ var crono = {
         } 
         else {
             crono.redirectToLogin();
+        }
+    },
+    
+    searchTimerEntries: function() {
+        token = $.cookie('token');
+        start_time = Math.floor(crono.fromStringToDateTime($('#from_date').val()+" 00:00:00").getTime()/1000);
+        stop_time = Math.floor(crono.fromStringToDateTime($('#to_date').val()+" 00:00:00").getTime()/1000);
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/timer/search/'+$.sha1(token+uuid)+'/'+start_time+'/'+stop_time+'/',
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    console.log(JSON.stringify(json_response));
+                    if(!json_response.error) {
+                        
+                        $('#timer-list-table tbody').html('');
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            json_response[i].task = (json_response[i].task) ? json_response[i].task : 'No task';
+                            var date = new Date(json_response[i].stop_time*1000);
+                            var row = $('<tr><td>'+date.toLocaleDateString()+'</td><td>'+json_response[i].task+'</td><td>'+json_response[i].project_name+'</td><td>'+json_response[i].duration+'</td></tr>');
+                            var manage_col = $('<td></td>');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-warning btn-edit-customer" data-id="'+json_response[i].id+'" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </a> ');
+                            manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-customer" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
+                            row.append(manage_col);
+                            $('#timer-list-table tbody').append(row);
+                        }
+                        
+                        /*$('#last_timer_entries').html($(''));
+                        for(var i=0; i<json_response.length; i++)
+                        {
+                            json_response[i].task = (json_response[i].task) ? json_response[i].task : 'No task';
+                            var date = new Date(json_response[i].stop_time*1000);
+                            $('#last_timer_entries').append('<li class="list-group-item"><a href="#" class="pull-right" style="padding-left:5px;font-size:14px;" data-toggle="tooltip-entry" title="Project: '+json_response[i].project_name+'"><span class="fa fa-info-circle"></span></a> '+date.toLocaleDateString()+' - '+json_response[i].task+'<b><span class="pull-right">'+json_response[i].duration+'</span></b></li>');
+                        }
+                        $("[data-toggle=tooltip-entry]").tooltip({placement: 'auto'});*/
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin();  
         }
     },
     
@@ -365,8 +442,8 @@ var crono = {
                         token: $.sha1(token+uuid),
                         task: $('#manual_entry_task').val(),
                         project_id: $('#manual_entry_project_list').val(),
-                        start_time: crono.fromStringToDateTime($('#manual_entry_start_time').val()).getTime()/1000,
-                        stop_time: crono.fromStringToDateTime($('#manual_entry_stop_time').val()).getTime()/1000
+                        start_time: Math.floor(crono.fromStringToDateTime($('#manual_entry_start_time').val()).getTime()/1000),
+                        stop_time: Math.floor(crono.fromStringToDateTime($('#manual_entry_stop_time').val()).getTime()/1000)
                     }
                     }).done(function( json_response ) {
                         if(json_response.status) {

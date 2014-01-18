@@ -162,6 +162,57 @@ class Timer extends REST_Controller {
         }
     }
     
+    public function search_get($token, $start_time, $stop_time, $user_id=null, $project_id=null, $customer_id=null)
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        if($token_entry->exists())
+        {
+            $response = [];
+            $timer_entries = new Timer_entry();
+
+            if($token_entry->user->get()->is_admin) 
+            {
+                if($user_id)
+                {
+                    $timer_entries->where('user_id', $user_id);
+                }
+            }
+            else 
+            {
+                $timer_entries->where('user_id', $token_entry->user->get()->id);
+            }
+            $timer_entries->where('start_time >=',$start_time);
+            $timer_entries->where('stop_time <=',$stop_time);
+            
+            if($project_id)
+            {
+                $timer_entries->where('project_id', $project_id);
+            }
+            
+            if($customer_id)
+            {
+                $timer_entries->where_related('project', 'customer_id', $customer_id);
+            }
+            
+            //Only not active time entries, order by stop time
+            $timer_entries->where('active',0)->order_by('stop_time','DESC')->get();
+            foreach($timer_entries as $timer_entry)
+            {
+                $t = new stdClass();
+                $t->id = $timer_entry->id;
+                $t->project_name = $timer_entry->project->get()->name;
+                $t->project_id = $timer_entry->project_id;
+                $t->task = $timer_entry->task;
+                $t->start_time = $timer_entry->start_time;
+                $t->stop_time = $timer_entry->stop_time;
+                $t->duration = from_unix_timespan_to_string($timer_entry->start_time,$timer_entry->stop_time);
+                array_push($response, $t);
+            }
+            $this->response($response);
+        }
+    }
+    
     public function index_put()
     {
         $token_entry = new Token();
@@ -182,7 +233,7 @@ class Timer extends REST_Controller {
             }
             else 
             {
-                //TODO
+                //TODO handler error
             }
         }
         else 
@@ -195,7 +246,29 @@ class Timer extends REST_Controller {
     
     public function delete_delete($id, $token)
     {
-        
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->put('token'))->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $timer_entry = new Timer_entry();
+            $timer_entry->where('id',$id)->where('user_id',$token_entry->user_id)->get();
+            if($timer_entry->exists() && $timer_entry->delete()) 
+            {
+                $response->status=true;
+            }
+            else 
+            {
+                $response->status=false;
+                $response->error='Entry not deleted';
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
     }
     
     public function weekTotal_get($token)

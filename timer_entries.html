@@ -30,6 +30,12 @@
                 $('#from_date_div').datetimepicker({pickTime: false});
                 $('#to_date_div').datetimepicker({pickTime: false});
                 crono.loadActiveTimer();
+                crono.populateCustomers($('#search_customer_list'), null);
+                crono.populateUsers($('#search_user_list'), null);
+                crono.populateProjects($('#search_project_list'));
+                $('#btn_search').click(function() {
+                    crono.searchTimerEntries();
+                });
             });
         </script> 
             <nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -86,34 +92,45 @@
                     
                     <h1><span class="fa fa-clock-o"></span> Timer Entries </h1>
                     <div class="clearfix"></div>
-                    <div class="row well well-sm">
-                        <div class="col-md-3">
-                            <label>From date</label>
-                            <div class="form-group">
-                                <div class='input-group date' id='from_date_div'>
-                                    <input type='text' class="form-control" data-format="yyyy-MM-dd" id='from_date'/>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                </div>
-                            </div>   
-                        </div>
-                        <div class="col-md-3">
-                            <label>To date</label>
-                            <div class="form-group">
-                                <div class='input-group date' id='to_date_div'>
-                                    <input type='text' class="form-control" data-format="yyyy-MM-dd" id='to_date'/>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
+                    <div class="well well-sm">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label>From date</label>
+                                <div class="form-group">
+                                    <div class='input-group date' id='from_date_div'>
+                                        <input type='text' class="form-control" data-format="yyyy-MM-dd" id='from_date'/>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>   
+                            </div>
+                            <div class="col-md-2">
+                                <label>To date</label>
+                                <div class="form-group">
+                                    <div class='input-group date' id='to_date_div'>
+                                        <input type='text' class="form-control" data-format="yyyy-MM-dd" id='to_date'/>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <label>Project</label>
+                                <select class="chosen-select form-control" id="search_project_list"></select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Customer</label>
+                                <select class="chosen-select form-control" id="search_customer_list"></select>
+                            </div>
+                            <div class="col-md-2 admin-only">
+                                <label>User</label>
+                                <select class="chosen-select form-control" id="search_user_list"></select>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label>Project</label>
-                            <select class="chosen-select form-control"></select>
-                        </div>
-                        <div class="col-md-3 admin-only">
-                            <label>User</label>
-                            <select class="chosen-select form-control"></select>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" id="btn_search" class="btn btn-block btn-info"><span class="fa fa-search"></span> Search</button>
+                            </div>
                         </div>
                     </div>
                     <table class="table table-striped" id="timer-list-table">
