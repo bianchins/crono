@@ -125,6 +125,7 @@ class Timer extends REST_Controller {
                 $t->start_time = $timer_entry->start_time;
                 $t->stop_time = $timer_entry->stop_time;
                 $t->duration = from_unix_timespan_to_string($timer_entry->start_time,$timer_entry->stop_time);
+                $t->duration_in_seconds = $timer_entry->stop_time - $timer_entry->start_time;
                 array_push($response, $t);
             }
             $this->response($response);
@@ -156,6 +157,7 @@ class Timer extends REST_Controller {
                 $t->start_time = $timer_entry->start_time;
                 $t->stop_time = $timer_entry->stop_time;
                 $t->duration = from_unix_timespan_to_string($timer_entry->start_time,$timer_entry->stop_time);
+                $t->duration_in_seconds = $timer_entry->stop_time - $timer_entry->start_time;
                 array_push($response, $t);
             }
             $this->response($response);
@@ -209,6 +211,7 @@ class Timer extends REST_Controller {
                 $t->start_time = $timer_entry->start_time;
                 $t->stop_time = $timer_entry->stop_time;
                 $t->duration = from_unix_timespan_to_string($timer_entry->start_time,$timer_entry->stop_time);
+                $t->duration_in_seconds = $timer_entry->stop_time - $timer_entry->start_time;
                 array_push($response, $t);
             }
             $this->response($response);

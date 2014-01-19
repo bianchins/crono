@@ -273,6 +273,7 @@ var crono = {
         project_id = ($('#search_project_list').val()) ? $('#search_project_list').val() : 0;
         user_id = ($('#search_user_list').val()) ? $('#search_user_list').val() : 0;
         uuid = $.cookie('client_secret_uuid');
+        duration_in_seconds=0;
         if(token && uuid) {
             $.ajax({
                 type: "GET",
@@ -294,6 +295,7 @@ var crono = {
                             manage_col.append('<a href="#" class="btn btn-sm btn-danger btn-delete-time-entry" data-id="'+json_response[i].id+'" title="Delete"> <span class="glyphicon glyphicon-trash"></span> </a> ');
                             row.append(manage_col);
                             $('#timer-list-table tbody').append(row);
+                            duration_in_seconds+=json_response[i].duration_in_seconds;
                         }
                         $('.btn-delete-time-entry').click(function(event) {
                            event.preventDefault();
@@ -302,7 +304,7 @@ var crono = {
                                crono.deleteTimeEntry(id);
                            }
                         });
-                        
+                        $('#total_duration').text(crono.getDurationStringFromSeconds(duration_in_seconds));
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -1097,6 +1099,28 @@ var crono = {
         else
             result.setSeconds(0);
         return result;
+    },
+    
+    getDurationStringFromSeconds: function(durationSecs) {
+        if(durationSecs==null) {
+            return "00:00:00";
+        } else {
+            if(durationSecs<0) {
+                return "00:00:00";
+            } else {
+                secs = durationSecs%60;
+                if(secs<10)
+                    secs="0"+secs;
+                durationSecs = Math.floor(durationSecs/60);
+                mins = durationSecs%60;
+                if(mins<10)
+                    mins="0"+mins;
+                hours = Math.floor(durationSecs / 60);
+                if(hours<10)
+                    hours="0"+hours;
+                return hours+":"+mins+":"+secs;
+            }
+        }
     },
     
     getDurationString: function(start_datetime, stop_datetime) {
