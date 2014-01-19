@@ -29,12 +29,13 @@
                 });
                 $('#from_date_div').datetimepicker({pickTime: false});
                 $('#to_date_div').datetimepicker({pickTime: false});
-                crono.loadActiveTimer();
+                
                 crono.populateCustomers($('#search_customer_list'), null);
                 crono.populateUsers($('#search_user_list'), null);
                 crono.populateProjects($('#search_project_list'));
+
                 $('#btn_search').click(function() {
-                    crono.searchTimerEntries();
+                    crono.searchTimeEntries();
                 });
             });
         </script> 
@@ -90,7 +91,7 @@
             <div class="row">
                 <div class="col-md-12">
                     
-                    <h1><span class="fa fa-clock-o"></span> Timer Entries </h1>
+                    <h1><span class="fa fa-clock-o"></span> Time Entries </h1>
                     <div class="clearfix"></div>
                     <div class="well well-sm">
                         <div class="row">
@@ -159,7 +160,7 @@
 
         <!-- footer-->
         <div style="width:100%" class="text-center">
-                <a href="http://github.com/bianchins/crono" class="text-center new-account" target="_blank">About <span style="font-family: 'Maven Pro', sans-serif;">Cr<i class="fa fa-clock-o"></i>no </span></a>
+                <a href="http://github.com/bianchins/crono" class="text-center" target="_blank">About <span style="font-family: 'Maven Pro', sans-serif;">Cr<i class="fa fa-clock-o"></i>no </span></a>
         </div> 
  
     </body>

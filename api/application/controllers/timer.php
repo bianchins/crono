@@ -166,6 +166,7 @@ class Timer extends REST_Controller {
     {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
+
         if($token_entry->exists())
         {
             $response = [];
@@ -197,6 +198,7 @@ class Timer extends REST_Controller {
             
             //Only not active time entries, order by stop time
             $timer_entries->where('active',0)->order_by('stop_time','DESC')->get();
+            //$timer_entries->check_last_query();
             foreach($timer_entries as $timer_entry)
             {
                 $t = new stdClass();
@@ -247,7 +249,7 @@ class Timer extends REST_Controller {
     public function delete_delete($id, $token)
     {
         $token_entry = new Token();
-        $token_entry->get_by_valid_token($this->put('token'))->get();
+        $token_entry->get_by_valid_token($token)->get();
         $response = new stdClass();
         if($token_entry->exists())
         {
