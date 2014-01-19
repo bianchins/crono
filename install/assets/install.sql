@@ -3,11 +3,14 @@
 -- Struttura della tabella `projects`
 --
 
-CREATE TABLE IF NOT EXISTS `customers` (
+CREATE TABLE IF NOT EXISTS `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `customer_name` varchar(150) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `gitlab_project_id` int(11) DEFAULT NULL,
+  `closed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Projects table' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
