@@ -280,7 +280,6 @@ var crono = {
                 url: '/crono/api/index.php/timer/search/'+$.sha1(token+uuid)+'/'+start_time+'/'+stop_time+'/'+user_id+'/'+project_id+'/'+$('#search_customer_list').val(),
                 dataType: "json" 
                 }).done(function( json_response ) {
-                    console.log(JSON.stringify(json_response));
                     if(!json_response.error) {
                         
                         $('#timer-list-table tbody').html('');
@@ -305,6 +304,26 @@ var crono = {
                            }
                         });
                         $('#total_duration').text(crono.getDurationStringFromSeconds(duration_in_seconds));
+                        $('.btn-edit-time-entry').click(function(event) {
+                           event.preventDefault();
+                           var id = $(this).attr('data-id');
+                           $('#modal_container').load('modal/edit_manual_entry.html', function() {
+
+                               $('#btn_save_edit_manual_entry').attr('data-id', id);
+                               
+                               $('#edit_manual_entry_start_time_div').datetimepicker({pickSeconds: true});
+                               $('#edit_manual_entry_stop_time_div').datetimepicker({pickSeconds: true});
+                            
+                               
+                               
+                               crono.readTimeEntry(id);
+                               $('#btn_save_edit_manual_entry').click(function(event){
+                                   event.preventDefault();
+                                   crono.updateTimeEntry($(this).attr('data-id'));
+                               });
+                               $('#modal_edit_manual_entry').modal('show');
+                           });
+                        });
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );
@@ -329,6 +348,7 @@ var crono = {
                         for(var i=0; i<json_response.length; i++)
                         {
                             json_response[i].task = (json_response[i].task) ? json_response[i].task : 'No task';
+                            json_response[i].project_name = (json_response[i].project_name) ? json_response[i].project_name : 'No project';
                             var date = new Date(json_response[i].stop_time*1000);
                             $('#last_timer_entries').append('<li class="list-group-item"><a href="#" class="pull-right" style="padding-left:5px;font-size:14px;" data-toggle="tooltip-entry" title="Project: '+json_response[i].project_name+'"><span class="fa fa-info-circle"></span></a> '+date.toLocaleDateString()+' - '+json_response[i].task+'<b><span class="pull-right">'+json_response[i].duration+'</span></b></li>');
                         }
@@ -343,7 +363,7 @@ var crono = {
         }
     },
     
-    populateProjects: function(chosen_element) {
+    populateProjects: function(chosen_element, choice) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
         if(token && uuid) {
@@ -362,7 +382,8 @@ var crono = {
                                 text: json_response[i].name
                             }));
                         }
-                        $(chosen_element).val('').trigger("chosen:updated");
+                        if(choice!=null) $(chosen_element).val(choice).trigger("chosen:updated");
+                        else $(chosen_element).val('').trigger("chosen:updated");
                         crono.loadActiveTimer();
                     }
              }).fail(function(jqXHR, textStatus) {
@@ -504,6 +525,37 @@ var crono = {
         }
     },
     
+    updateTimeEntry: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "PUT",
+                url: '/crono/api/index.php/timer/edit',
+                dataType: "json",
+                data: {
+                    token: $.sha1(token+uuid),
+                    task: $('#edit_manual_entry_task').val(),
+                    project_id: $('#edit_manual_entry_project_list').val(),
+                    start_time: Math.floor(crono.fromStringToDateTime($('#edit_manual_entry_start_time').val()).getTime()/1000),
+                    stop_time: Math.floor(crono.fromStringToDateTime($('#edit_manual_entry_stop_time').val()).getTime()/1000),
+                    id: id
+                }
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                       //Error handler
+                       $('#modal_edit_manual_entry').modal('hide');
+                       crono.searchTimeEntries();
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin();  
+        }
+    },
+    
     updateActiveTimer: function() {
         if(crono.timer.activeId!=null) {
             token = $.cookie('token');
@@ -607,6 +659,48 @@ var crono = {
         }
     },
     
+    readTimeEntry: function(id) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/time_entries/'+id+'/'+$.sha1(token+uuid),
+                dataType: "json",
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.populateProjects('#edit_manual_entry_project_list',json_response.entry.project_id);
+                        $('#edit_manual_entry_task').val(json_response.entry.task);
+                        
+                        
+                        $('#edit_manual_entry_start_time').val(json_response.entry.start_time_formatted);
+                        $('#edit_manual_entry_stop_time').val(json_response.entry.stop_time_formatted);
+                        
+                        $('#edit_manual_entry_start_time_div').datetimepicker('update');
+                        $('#edit_manual_entry_stop_time_div').datetimepicker('update');
+                        
+                        $('#edit_manual_entry_calculate_btn').click(function(event){
+                                event.preventDefault();
+                                var start_date = crono.fromStringToDateTime($('#edit_manual_entry_start_time').val());
+                                var stop_date = crono.fromStringToDateTime($('#edit_manual_entry_stop_time').val());
+                                $('#edit_manual_entry_duration').val(crono.getDurationString(start_date, stop_date));
+                        });
+                        $('#edit_manual_entry_calculate_btn').trigger('click');
+                        
+                    } else {
+                        //TODO Error handler
+                        console.log('Error during reading time entry');
+                    }
+             }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin();
+        }
+    },
+    
     readCustomer: function(id) {
         token = $.cookie('token');
         uuid = $.cookie('client_secret_uuid');
@@ -621,7 +715,7 @@ var crono = {
                         $('#edit_customer_name').val(json_response.customer.customer_name);
                     } else {
                         //TODO Error handler
-                        console.log('Error during deleting project');
+                        console.log('Error during reading customer');
                     }
              }).fail(function(jqXHR, textStatus) {
                     console.log( "Request failed: " + textStatus + " " + jqXHR.status );

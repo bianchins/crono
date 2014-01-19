@@ -55,5 +55,7 @@ $route['user/(:num)/(:any)'] = "account/user/$1/$2";
 //Route for POST and PUT
 $route['user'] = "account/user";
 
+$route['time_entries/(:num)/(:any)'] = "timer/entry/$1/$2";
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

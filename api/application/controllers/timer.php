@@ -68,6 +68,43 @@ class Timer extends REST_Controller {
         $this->response($response);
     }
     
+    public function entry_get($id, $token)
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($token)->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            //TODO
+            $timer_entries = new Timer_entry();
+            //Selecting the entry
+            $timer_entries->where('id', $id)->get();
+            if($timer_entries->exists())
+            {
+                $response->status = true;
+                $timer = new stdClass();
+                $timer->id = $timer_entries->id;
+                $timer->task = $timer_entries->task;
+                $timer->start_time_formatted = gmdate('Y-m-d H:i:s',$timer_entries->start_time);
+                $timer->stop_time_formatted = gmdate('Y-m-d H:i:s',$timer_entries->stop_time);
+                $timer->project_id = $timer_entries->project_id;
+                $timer->project_name = $timer_entries->project->get()->name;
+                $response->entry = $timer;
+            }
+            else 
+            {
+                $response->status = true;
+                $response->entry = null;
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
+    }
+    
     public function active_get($token)
     {
         $token_entry = new Token();
@@ -218,6 +255,38 @@ class Timer extends REST_Controller {
         }
     }
     
+    public function edit_put()
+    {
+        $token_entry = new Token();
+        $token_entry->get_by_valid_token($this->put('token'))->get();
+        $response = new stdClass();
+        if($token_entry->exists())
+        {
+            $timer_entry = new Timer_entry();
+            if(!$token_entry->user->get()->is_admin) $timer_entry->where('user_id',$token_entry->user_id);
+            $timer_entry->where('id',$this->put('id'))->get();
+            if($timer_entry->exists()) 
+            {
+                $timer_entry->task=$this->put('task');
+                $timer_entry->start_time = $this->put('start_time');
+                $timer_entry->stop_time = $this->put('stop_time');
+                $timer_entry->project_id = $this->put('project_id');
+                $response->status = $timer_entry->save();
+            }
+            else 
+            {
+                //TODO handler error
+                $response->status=false;
+            }
+        }
+        else 
+        {
+            $response->status=false;
+            $response->error='Token not found or session expired';
+        }
+        $this->response($response);
+    }
+    
     public function index_put()
     {
         $token_entry = new Token();
@@ -282,7 +351,7 @@ class Timer extends REST_Controller {
         $token_entry = new Token();
         $token_entry->get_by_valid_token($token)->get();
         $response = new stdClass();
-        if(true)//if($token_entry->exists())
+        if($token_entry->exists())
         {
             //TODO
             $timer_entries = new Timer_entry();
@@ -292,7 +361,7 @@ class Timer extends REST_Controller {
             $response->totalThisWeek = 0;
             if($timer_entries->exists())
             {
-                if(!$timer_entries->totalTime) return from_unix_timespan_to_string(0);
+                if(!$timer_entries->totalTime) $response->totalThisWeek=from_unix_timespan_to_string(0);
                 $response->totalThisWeek = from_unix_timespan_to_string($timer_entries->totalTime);
             }
         }
