@@ -79,7 +79,7 @@ class Projects extends REST_Controller {
             $projects = new Project();
             $projects->order_by('name', 'ASC');
             $projects->get();
-            $response = [];
+            $response = array();
             foreach($projects as $project) 
             {
                $p = new stdClass();

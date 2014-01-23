@@ -47,7 +47,7 @@ class Customers extends REST_Controller {
             $customers = new Customer();
             $customers->order_by('customer_name', 'ASC');
             $customers->get();
-            $response = [];
+            $response = array();
             foreach($customers as $customer) 
             {
                $p = new stdClass();

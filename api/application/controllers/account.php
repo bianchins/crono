@@ -193,7 +193,7 @@ class Account extends REST_Controller {
         $token_entry->get_by_valid_token($token)->get();
         if($token_entry->exists() && $token_entry->user->get()->is_admin)
         {
-            $response = [];
+            $response = array();
             $users = new User();
             $users->order_by('username','DESC')->get();
             foreach($users as $user)

@@ -147,7 +147,7 @@ class Timer extends REST_Controller {
         $token_entry->get_by_valid_token($token)->get();
         if($token_entry->exists())
         {
-            $response = [];
+            $response = array();
             $timer_entries = new Timer_entry();
             $timer_entries->where('user_id', $token_entry->user->get()->id);
             //Only not active time entries, order by stop time
@@ -175,7 +175,7 @@ class Timer extends REST_Controller {
         $token_entry->get_by_valid_token($token)->get();
         if($token_entry->exists())
         {
-            $response = [];
+            $response = array();
             $timer_entries = new Timer_entry();
             //Does it show only current user?
             if($only_current_user) 
@@ -208,7 +208,7 @@ class Timer extends REST_Controller {
 
         if($token_entry->exists())
         {
-            $response = [];
+            $response = array();
             $timer_entries = new Timer_entry();
 
             if($token_entry->user->get()->is_admin) 
