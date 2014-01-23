@@ -66,7 +66,10 @@ class Account extends REST_Controller {
     {
         $response = new stdClass();
         //Parameters check
-        if(!empty($this->post('username')) && !empty($this->post('password')) && !empty($this->post('client_secret_uuid')))
+        $username = $this->post('username');
+        $password = $this->post('password');
+        $client_secret_uuid = $this->post('client_secret_uuid');
+        if(!empty($username) && !empty($password) && !empty($client_secret_uuid))
         {
             $user = new User();
             $user->where('username', $this->post('username'))->where('password', sha1($this->post('password')))->get();
