@@ -269,7 +269,7 @@ var crono = {
     searchTimeEntries: function() {
         token = $.cookie('token');
         start_time = Math.floor(crono.fromStringToDateTime($('#from_date').val()+" 00:00:00").getTime()/1000);
-        stop_time = Math.floor(crono.fromStringToDateTime($('#to_date').val()+" 00:00:00").getTime()/1000);
+        stop_time = Math.floor(crono.fromStringToDateTime($('#to_date').val()+" 23:59:59").getTime()/1000);
         project_id = ($('#search_project_list').val()) ? $('#search_project_list').val() : 0;
         user_id = ($('#search_user_list').val()) ? $('#search_user_list').val() : 0;
         uuid = $.cookie('client_secret_uuid');
