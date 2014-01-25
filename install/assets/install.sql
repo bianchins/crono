@@ -81,3 +81,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `firstname`, `lastname`, `is_admin`, `gitlab_private_key`) VALUES
 (1, 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'System', 'Administrator', 1, '');
+
+INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
+('frontend_language', 'english'),
+('frontend_navbar_theme', 'default'),
+('system_cost_per_hour', '60.00'),
+('system_currency', 'EUR');

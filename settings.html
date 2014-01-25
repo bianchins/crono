@@ -27,6 +27,8 @@
                 });
                 $(".chosen-select").chosen({disable_search_threshold: 10});
                 
+                crono.loadSettings(true);
+                
                 $('.btn-success').click(function() {
                     alert('Sorry, Settings feature is not ready yet :-(');
                 });
@@ -89,21 +91,35 @@
                     <h1><span class="glyphicon glyphicon-cog"></span> Settings</h1>
                     <hr/>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-md-offset-2">
                             <div class="form-group">
                             <label style="display:block;">Frontend language</label>
-                            <select class="chosen-select form-control">
-                                <option value="english">English</option>
-                                <option value="italian" disabled="">Italian</option>
-                            </select>
+                                <select class="chosen-select form-control" id="frontend_language">
+                                    <option value="english">English</option>
+                                    <option value="italian" disabled="">Italian</option>
+                                </select>
                             </div>
                             <div class="form-group">
                             <label style="display:block;">Frontend navbar theme</label>
-                            <select class="chosen-select form-control">
-                                <option value="default">Clear theme</option>
-                                <option value="inverse">Dark theme</option>
-                            </select>
+                                <select class="chosen-select form-control" id="frontend_navbar_theme">
+                                    <option value="default">Clear theme</option>
+                                    <option value="inverse">Dark theme</option>
+                                </select>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>System currency</label>
+                                <input type="text" class="form-control" id="system_currency"/>
+                            </div>
+                            <div class="form-group">
+                                <label>System cost per hour</label>
+                                <input type="text" class="form-control" id="system_cost_per_hour"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
                             <button class="btn btn-block btn-success"><span class="fa fa-floppy-o"></span> Save</button>
                         </div>
                     </div>
@@ -115,7 +131,7 @@
         </div>
 
         <!-- footer-->
-        <div style="width:100%" class="text-center">
+        <div style="width:100%;margin-top:20px;" class="text-center">
                 <a href="http://github.com/bianchins/crono" class="text-center new-account" target="_blank">About <span style="font-family: 'Maven Pro', sans-serif;">Cr<i class="fa fa-clock-o"></i>no </span></a>
         </div> 
  

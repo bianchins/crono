@@ -26,6 +26,7 @@ var crono = {
                               event.preventDefault(); 
                            });
                         }
+                        crono.loadSettings(false);
                     } else {
                         crono.redirectToLogin();
                     }
@@ -37,6 +38,39 @@ var crono = {
         else {
             crono.redirectToLogin();
         }
+    },
+    
+    settings: {},
+    
+    loadSettings: function(from_setting_page) {
+        token = $.cookie('token');
+        uuid = $.cookie('client_secret_uuid');
+        if(token && uuid) {
+            $.ajax({
+                type: "GET",
+                url: '/crono/api/index.php/settings/all/'+$.sha1(token+uuid),
+                dataType: "json" 
+                }).done(function( json_response ) {
+                    if(json_response.status) {
+                        crono.settings = json_response.settings;
+                        if(crono.settings.hasOwnProperty('frontend_navbar_theme')) {
+                            $('nav').removeClass('navbar-default');
+                            $('nav').addClass('navbar-'+crono.settings.frontend_navbar_theme);
+                        }
+                        if(from_setting_page) {
+                            if(crono.settings.hasOwnProperty('frontend_navbar_theme')) $('#frontend_navbar_theme').val(crono.settings.frontend_navbar_theme).trigger("chosen:updated");
+                            if(crono.settings.hasOwnProperty('frontend_language')) $('#frontend_language').val(crono.settings.frontend_language).trigger("chosen:updated");
+                            if(crono.settings.hasOwnProperty('system_currency')) $('#system_currency').val(crono.settings.system_currency);
+                            if(crono.settings.hasOwnProperty('system_cost_per_hour')) $('#system_cost_per_hour').val(crono.settings.system_cost_per_hour);
+                        }
+                    }
+                 }).fail(function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus + " " + jqXHR.status );
+            }); 
+        } 
+        else {
+            crono.redirectToLogin(); 
+        }    
     },
     
     redirectToLogin: function() {
@@ -304,6 +338,9 @@ var crono = {
                            }
                         });
                         $('#total_duration').text(crono.getDurationStringFromSeconds(duration_in_seconds));
+                        if(crono.settings.hasOwnProperty('system_cost_per_hour') && crono.settings.hasOwnProperty('system_currency')){
+                            $('#total_duration').append(' - Cost: ' + Math.round(crono.settings.system_cost_per_hour * duration_in_seconds / 36)/100 + ' ' + crono.settings.system_currency);
+                        }
                         $('.btn-edit-time-entry').click(function(event) {
                            event.preventDefault();
                            var id = $(this).attr('data-id');
