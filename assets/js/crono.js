@@ -302,16 +302,17 @@ var crono = {
     
     searchTimeEntries: function() {
         token = $.cookie('token');
-        start_time = Math.floor(crono.fromStringToDateTime($('#from_date').val()+" 00:00:00").getTime()/1000);
-        stop_time = Math.floor(crono.fromStringToDateTime($('#to_date').val()+" 23:59:59").getTime()/1000);
+        start_time = ($('#from_date').val()) ? Math.floor(crono.fromStringToDateTime($('#from_date').val()+" 00:00:00").getTime()/1000) : 0;
+        stop_time = ($('#to_date').val()) ? Math.floor(crono.fromStringToDateTime($('#to_date').val()+" 23:59:59").getTime()/1000) : 1e10;
         project_id = ($('#search_project_list').val()) ? $('#search_project_list').val() : 0;
         user_id = ($('#search_user_list').val()) ? $('#search_user_list').val() : 0;
+        customer_id = ($('#search_customer_list').val()) ? $('#search_customer_list').val() : '';
         uuid = $.cookie('client_secret_uuid');
         duration_in_seconds=0;
         if(token && uuid) {
             $.ajax({
                 type: "GET",
-                url: '/crono/api/index.php/timer/search/'+$.sha1(token+uuid)+'/'+start_time+'/'+stop_time+'/'+user_id+'/'+project_id+'/'+$('#search_customer_list').val(),
+                url: '/crono/api/index.php/timer/search/'+$.sha1(token+uuid)+'/'+start_time+'/'+stop_time+'/'+user_id+'/'+project_id+'/'+customer_id,
                 dataType: "json" 
                 }).done(function( json_response ) {
                     if(!json_response.error) {

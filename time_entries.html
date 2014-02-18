@@ -34,6 +34,8 @@
                 crono.populateUsers($('#search_user_list'), null);
                 crono.populateProjects($('#search_project_list'));
 
+                crono.searchTimeEntries();
+
                 $('#btn_search').click(function() {
                     crono.searchTimeEntries();
                 });
