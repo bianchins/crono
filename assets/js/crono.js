@@ -444,6 +444,7 @@ var crono = {
                 }).done(function( json_response ) {
                     if(json_response.status) {
                        $('#thisWeekTotal').text(json_response.totalThisWeek);
+                       // $('#myThisWeekTotal').text(json_response.myTotalThisWeek);
                     } else {
                         //Error handler
                     }
@@ -520,6 +521,7 @@ var crono = {
                 });
             }
             else {
+                toastr.error('Start time and/or stop time not specified');
                 console.log('Start time and/or stop time not specified');
             }
         } 
@@ -1110,6 +1112,7 @@ var crono = {
                         $.cookie('token', json_response.token);
                         window.location.replace("timer.html"); 
                     } else {
+                        toastr.error(json_response.error);
                         $('#login_error').html(json_response.error);
                     }
              }).fail(function(jqXHR, textStatus) {

@@ -356,11 +356,18 @@ class Timer extends REST_Controller {
             //TODO
             $timer_entries = new Timer_entry();
             //Selecting the entry
-            $timer_entries->getThisWeek()->where('active',0)->select_sum('(stop_time - start_time)','totalTime')->get();
+            // $my_timer_entries->getThisWeek()->where('user_id',$token_entry->user_id)->where('active',0)->select_sum('(stop_time - start_time)','totalTime')->get();
+            
+            $timer_entries->getThisWeek()->where('user_id',$token_entry->user_id)->where('active',0)->select_sum('(stop_time - start_time)','totalTime')->get();
+
             $response->status = true;
+            //$response->myTotalThisWeek = 0;
             $response->totalThisWeek = 0;
             if($timer_entries->exists())
             {
+              //  if(!$my_timer_entries->totalTime) $response->myTotalThisWeek=from_unix_timespan_to_string(0);
+              //  $response->myTotalThisWeek = from_unix_timespan_to_string($my_timer_entries->totalTime);
+
                 if(!$timer_entries->totalTime) $response->totalThisWeek=from_unix_timespan_to_string(0);
                 $response->totalThisWeek = from_unix_timespan_to_string($timer_entries->totalTime);
             }
